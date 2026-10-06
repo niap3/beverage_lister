@@ -67,11 +67,20 @@ if (/[?&](q|cat|size|min|max|sup|cmp)=/.test(location.search)) document.document
             <legend>Price per bottle (₹)</legend>
             <label>From <input id="min" type="number" inputmode="numeric" min="0" step="10" placeholder="0"></label>
             <label>To <input id="max" type="number" inputmode="numeric" min="0" step="10" placeholder="Any"></label>
+            <div class="chips price-quick" id="price-quick" role="group" aria-label="Quick price limits">
+              <button type="button" class="quick" data-max="500">Under ₹500</button>
+              <button type="button" class="quick" data-max="1000">Under ₹1,000</button>
+              <button type="button" class="quick" data-max="2000">Under ₹2,000</button>
+              <button type="button" class="quick" data-max="5000">Under ₹5,000</button>
+            </div>
           </fieldset>
           <label class="field">Supplier
             <select id="sup"><option value="">All suppliers</option></select>
           </label>
-          <button type="button" id="reset" class="link-button">Clear filters</button>
+          <div class="panel-actions">
+            <button type="button" id="reset" class="link-button">Clear filters</button>
+            <button type="button" id="filters-done" class="tray-open">Show results</button>
+          </div>
         </div>
       </details>
 
@@ -80,7 +89,7 @@ if (/[?&](q|cat|size|min|max|sup|cmp)=/.test(location.search)) document.document
           <option value="">Best match</option>
           <option value="price-asc">Price, low to high</option>
           <option value="price-desc">Price, high to low</option>
-          <option value="litre">Cheapest per litre</option>
+          <option value="litre">Best value</option>
           <option value="az">A to Z</option>
         </select>
       </label>
@@ -94,6 +103,13 @@ if (/[?&](q|cat|size|min|max|sup|cmp)=/.test(location.search)) document.document
     <p>Look up any of <span data-meta="brands">1,327</span> brands. Every bottle size side by side, with the price per litre so you can tell which size is better value.</p>
     <p class="intro-label">Browse by type</p>
     <ul class="type-links" id="type-links"></ul>
+    <p class="intro-label">Best value, lowest price per litre first</p>
+    <ul class="type-links value-links">
+      <li><a href="?cat=whisky&amp;size=750&amp;max=1000&amp;sort=litre" data-cat="whisky">750 ml whisky under ₹1,000</a></li>
+      <li><a href="?cat=brandy&amp;size=750&amp;max=1000&amp;sort=litre" data-cat="brandy">750 ml brandy under ₹1,000</a></li>
+      <li><a href="?cat=rum&amp;size=750&amp;max=1000&amp;sort=litre" data-cat="rum">750 ml rum under ₹1,000</a></li>
+      <li><a href="?cat=beer&amp;size=650&amp;max=200&amp;sort=litre" data-cat="beer">650 ml beer under ₹200</a></li>
+    </ul>
     <p class="try">Try: <a href="?q=old%20monk" data-q="old monk">Old Monk</a> · <a href="?q=mcdowells%20no.1" data-q="mcdowells no.1">McDowell's No.1</a> · <a href="?q=honey%20bee" data-q="honey bee">Honey Bee</a> · <a href="?q=kingfisher" data-q="kingfisher">Kingfisher</a></p>
   </section>
   <p id="summary" class="summary" role="status" aria-live="polite" tabindex="-1">Loading prices…</p>

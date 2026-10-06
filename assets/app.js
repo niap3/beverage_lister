@@ -133,6 +133,10 @@
   }
 
   function syncCount() {
+    var quick = document.querySelectorAll('#price-quick [data-max]');
+    for (var i = 0; i < quick.length; i++) {
+      quick[i].setAttribute('aria-pressed', !state.min && state.max === quick[i].getAttribute('data-max'));
+    }
     var n = activeFilters();
     el.count.hidden = !n;
     el.countN.textContent = n;
@@ -253,7 +257,8 @@
     var bare = !state.q.trim() && !activeFilters();
     document.documentElement.classList.toggle('has-query', !bare);
     el.summary.textContent = (bare ? 'All ' : '') + plural(list.length, 'brand', 'brands') + ', ' +
-      plural(bottles, 'bottle size', 'bottle sizes') + (bare && !state.sort ? ', A to Z' : '');
+      plural(bottles, 'bottle size', 'bottle sizes') + (bare && !state.sort ? ', A to Z' : '') +
+      (state.sort === 'litre' ? ', best value (lowest price per litre) first' : '');
 
     if (!out.exact) {
       el.notice.hidden = false;
@@ -444,6 +449,18 @@
       });
     });
     el.reset.addEventListener('click', clearFilters);
+    $('filters-done').addEventListener('click', function () {
+      el.filters.open = false;
+      el.summary.focus();
+    });
+    $('price-quick').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-max]');
+      if (!b) return;
+      state.min = '';
+      state.max = state.max === b.getAttribute('data-max') ? '' : b.getAttribute('data-max');
+      syncControls();
+      update(true);
+    });
     el.empty.addEventListener('click', function (e) {
       if (e.target.closest('[data-reset]')) clearFilters();
     });
@@ -473,8 +490,11 @@
       var a = e.target.closest('a');
       if (!a) return;
       e.preventDefault();
-      if (a.hasAttribute('data-q')) { state.q = a.getAttribute('data-q'); }
-      else if (a.hasAttribute('data-cat')) { state.cat = a.getAttribute('data-cat'); }
+      // Apply every parameter in the link (q, cat, size, max, sort...).
+      var p = new URLSearchParams(a.getAttribute('href').split('?')[1] || '');
+      ['q', 'cat', 'size', 'min', 'max', 'sup', 'sort'].forEach(function (k) {
+        if (p.has(k)) state[k] = p.get(k);
+      });
       syncControls();
       update(true);
       el.summary.focus();
