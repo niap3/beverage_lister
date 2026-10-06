@@ -178,7 +178,7 @@ way. Only the order is published, never the counts.
    gh secret set GOATCOUNTER_TOKEN -R niap3/beverage_lister
    ```
 
-On every deploy, and every Monday 03:00 IST, CI runs
+On every deploy, and daily at 03:00 IST, CI runs
 `scripts/fetch_popularity.py` into the published `data/popularity.json`.
 The sort and badges appear once at least one brand has 3 or more look-ups in 30 days.
 To turn counting off: `python scripts/configure_site.py --goatcounter ""`.

@@ -6,9 +6,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  # Weekly refresh of the "Most looked up" counts, even with no new prices.
+  # Daily refresh of the "Trending this week" ranking, even with no new prices.
   schedule:
-    - cron: "30 21 * * 0"   # Sunday 21:30 UTC = Monday 03:00 in Kerala
+    - cron: "30 21 * * *"   # 21:30 UTC = 03:00 in Kerala
 
 permissions:
   contents: read
