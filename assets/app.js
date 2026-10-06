@@ -292,7 +292,7 @@
     var q = esc(state.q.trim());
     var html;
     if (out.hasText && out.nameMatches === 0) {
-      html = '<h2>Aiyyo! “' + q + '” is not in this price list</h2>' +
+      html = '<h2>“' + q + '” is not in this price list</h2>' +
         '<p>It is not among the brands in the Bevco price list from ' +
         esc(window.formatMetaDate(data.meta.effective)) + ', so this site has no price for it. ' +
         'Ask at the shop whether they have it and what it costs.</p>' +
@@ -305,7 +305,7 @@
       html = '<h2>No ' + out.querySize + ' ml bottles match these filters</h2>' +
         '<p><button type="button" class="link-button" data-reset>Clear filters</button></p>';
     } else {
-      html = '<h2>Too picky! No bottles match these filters</h2>' +
+      html = '<h2>No bottles match these filters</h2>' +
         '<p>Try a wider price range or a different size.</p>' +
         '<p><button type="button" class="link-button" data-reset>Clear filters</button></p>';
     }

@@ -1,5 +1,16 @@
 # Design plan: Kerala liquor price lookup
 
+> **Current look (Oct 2026): elegant and simple, light mode only.** Warm
+> white page, white cards, thin hairlines, soft shadows and one quiet green
+> accent. Fraunces (serif) for headings, the system font for text, Barlow
+> Semi Condensed for prices, which stay the largest thing on screen. Drink
+> types show only as a small coloured dot; "Best value" is a small green
+> tag. A short Malayalam line (എന്താ വില?) sits above the home heading.
+> Contrast: ink 16:1+, muted 5.6:1+, accent 8.4:1+. Between the first
+> version and this one there was a louder "sticker" theme, since replaced.
+> The palette and type sections below describe the first version; the
+> rules on prices, layout, behaviour and accessibility still hold.
+
 ## Who and where
 Someone in a Bevco queue on a cheap Android phone, one hand, patchy data,
 bright light or a dim shop. They want one number, fast: what does this bottle
