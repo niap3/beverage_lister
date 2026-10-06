@@ -1,0 +1,45 @@
+<!doctype html>
+<!-- Source for assets/og-image.png (1200x630 share preview). Render with:
+     chrome-headless-shell --screenshot=assets/og-image.png --window-size=1200,630
+                           --hide-scrollbars scripts/og-image.html
+     Text only, no bottles or glasses, same palette as the site. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face {
+    font-family: "Barlow Semi Condensed";
+    font-weight: 700;
+    src: url("../assets/fonts/barlow-semi-condensed-latin-700-normal.woff2") format("woff2");
+  }
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    background: #F6F1E7;
+    color: #1C1B19;
+    font-family: system-ui, "Segoe UI", sans-serif;
+    display: flex;
+    flex-direction: column;
+  }
+  .band { background: #1F4D3A; color: #F6F1E7; padding: 56px 72px 44px; }
+  h1 { margin: 0; font: 700 96px/1 "Barlow Semi Condensed", sans-serif; letter-spacing: 0.01em; }
+  .sub { margin: 18px 0 0; font-size: 34px; }
+  .body { flex: 1; display: flex; align-items: center; gap: 0; padding: 0 72px; }
+  .cell { flex: 1; padding: 22px 28px; border-left: 2px solid #D9CFBD; }
+  .cell:first-child { border-left: 0; padding-left: 0; }
+  .ml { font-size: 30px; font-weight: 600; color: #5E574C; }
+  .p { font: 700 74px/1.05 "Barlow Semi Condensed", sans-serif; color: #8A3B1E; }
+  .foot { padding: 0 72px 40px; font-size: 26px; color: #5E574C; }
+</style>
+</head>
+<body>
+  <div class="band">
+    <h1>Kerala liquor prices</h1>
+    <p class="sub">Search the Bevco shop price list by brand name</p>
+  </div>
+  <div class="body">
+    <div class="cell"><div class="ml">Every size</div><div class="p">side by side</div></div>
+    <div class="cell"><div class="ml">Compare by</div><div class="p">₹ per litre</div></div>
+  </div>
+  <p class="foot">Unofficial. Free. No ads.</p>
+</body>
+</html>

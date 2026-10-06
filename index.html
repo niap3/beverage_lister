@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kerala liquor prices: search the Bevco price list</title>
+<meta name="description" content="Look up Bevco (KSBC) FL-1 shop prices in Kerala. Every bottle size side by side, with the price per litre. Unofficial, free and ad-free.">
+<link rel="canonical" href="https://niap3.github.io/beverage_lister/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kerala liquor prices">
+<meta property="og:title" content="Kerala liquor prices: search the Bevco price list">
+<meta property="og:description" content="Every bottle size side by side, with the price per litre. Unofficial, free and ad-free.">
+<meta property="og:url" content="https://niap3.github.io/beverage_lister/">
+<meta property="og:image" content="https://niap3.github.io/beverage_lister/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Kerala liquor prices. Search the Bevco shop price list.">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#1F4D3A">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%238A3B1E'/%3E%3Ctext x='16' y='24' font-size='22' font-family='sans-serif' font-weight='700' text-anchor='middle' fill='%23FFFDF8'%3E%E2%82%B9%3C/text%3E%3C/svg%3E">
+<link rel="preload" href="assets/fonts/barlow-semi-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="data/site.json" as="fetch" crossorigin>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to results</a>
+
+<header class="masthead">
+  <div class="wrap masthead-row">
+    <h1 class="site-name">Kerala liquor prices</h1>
+    <nav aria-label="Site"><a href="about.html">About</a></nav>
+  </div>
+  <div class="wrap">
+    <p class="age">For adults only. The legal drinking age in Kerala is 23.</p>
+  </div>
+</header>
+
+<div class="searchbar">
+  <div class="wrap">
+    <form class="search" role="search" id="search-form">
+      <label for="q" class="visually-hidden">Search by brand name</label>
+      <input id="q" name="q" type="search" placeholder="Search a brand, like Royal Stag"
+             autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"
+             enterkeyhint="search">
+      <button type="button" id="clear" class="clear" aria-label="Clear search" hidden>&times;</button>
+    </form>
+    <p class="asof">Prices as of <time data-meta="effective" datetime="2026-05-11">11 May 2026</time>, from the Bevco price list</p>
+
+    <div class="controls">
+      <details id="filters" class="filters">
+        <summary>Filters <span id="filter-count" class="count" hidden><span id="filter-count-n"></span><span class="visually-hidden"> on</span></span></summary>
+        <div class="panel">
+          <fieldset>
+            <legend>Type</legend>
+            <div class="chips" id="cat-chips"></div>
+          </fieldset>
+          <fieldset>
+            <legend>Bottle size</legend>
+            <div class="chips" id="size-chips"></div>
+          </fieldset>
+          <fieldset class="price">
+            <legend>Price per bottle (₹)</legend>
+            <label>From <input id="min" type="number" inputmode="numeric" min="0" step="10" placeholder="0"></label>
+            <label>To <input id="max" type="number" inputmode="numeric" min="0" step="10" placeholder="Any"></label>
+          </fieldset>
+          <label class="field">Supplier
+            <select id="sup"><option value="">All suppliers</option></select>
+          </label>
+          <button type="button" id="reset" class="link-button">Clear filters</button>
+        </div>
+      </details>
+
+      <label class="sort">Sort
+        <select id="sort">
+          <option value="">Best match</option>
+          <option value="price-asc">Price, low to high</option>
+          <option value="price-desc">Price, high to low</option>
+          <option value="litre">Cheapest per litre</option>
+          <option value="az">A to Z</option>
+        </select>
+      </label>
+    </div>
+  </div>
+</div>
+
+<main class="wrap" id="main" tabindex="-1">
+  <p id="summary" class="summary" role="status" aria-live="polite">Loading prices…</p>
+  <p id="notice" class="notice" hidden></p>
+  <div id="results" class="results"></div>
+  <div id="empty" class="empty" hidden></div>
+  <button type="button" id="more" class="more" hidden>Show more</button>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <p><strong>Source:</strong> Kerala State Beverages (M&amp;M) Corporation Limited, <span data-meta="title">Price List of IMFL/BEER/WINE for Warehouses and FL-1 Shops (Tender 2026-27 - Quoted Items)</span>.</p>
+    <p>Prices effective from <strong data-meta="effective">11 May 2026</strong>. List printed on <strong data-meta="printed">23 September 2026</strong>.</p>
+    <p><a href="source/pricelist.pdf">Open the original price list (PDF, 1.5 MB)</a><br><a href="about.html">About this site and reporting an error</a></p>
+    <p>This is an unofficial lookup, not run by or connected to KSBC (Bevco). It is for information only. It does not sell or deliver alcohol, and it has no ads or affiliate links. Prices are the FL-1 shop price after tax, copied from the list above. If that list has changed since, a shop may charge a different price, and the shop’s price applies.</p>
+  </div>
+</footer>
+
+<div id="tray" class="tray" hidden>
+  <div class="wrap tray-inner">
+    <p id="tray-text" class="tray-text" role="status" aria-live="polite"></p>
+    <button type="button" id="tray-clear" class="link-button">Clear</button>
+    <button type="button" id="tray-open" class="tray-open">Compare</button>
+  </div>
+</div>
+
+<dialog id="compare" class="compare" aria-labelledby="compare-title">
+  <div class="compare-head">
+    <h2 id="compare-title">Compare side by side</h2>
+    <button type="button" id="compare-close" class="close" aria-label="Close comparison">&times;</button>
+  </div>
+  <div id="compare-body" class="compare-body"></div>
+</dialog>
+
+<script src="assets/meta.js"></script>
+<script src="assets/search.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

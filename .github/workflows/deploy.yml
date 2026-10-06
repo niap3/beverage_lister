@@ -1,0 +1,64 @@
+# Test, then deploy the static site to GitHub Pages on every push to main.
+# One-time setup: repo Settings > Pages > Build and deployment > Source: GitHub Actions.
+name: Test and deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      # pdftotext is deliberately not installed: the parser is verified with
+      # xpdf's pdftotext and poppler's has not been checked against this PDF,
+      # so the re-parse tests skip here. Run them locally (see README).
+      - name: Data tests
+        run: python -m unittest discover -s tests -v
+      - name: Search tests
+        run: node --test tests/search.test.js
+      - name: Warn if site URLs are still placeholders
+        run: |
+          if grep -q "YOUR-GITHUB-USERNAME" index.html about.html sitemap.xml; then
+            echo "::warning::Site URLs are placeholders. Run scripts/configure_site.py with --site-url and --repo-url."
+          fi
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      # Publish only what the site serves, not scripts, tests or the history.
+      - name: Assemble site
+        run: |
+          mkdir -p _site/data _site/source
+          cp index.html about.html sw.js sitemap.xml robots.txt .nojekyll _site/
+          cp -r assets _site/
+          cp data/site.json data/meta.json _site/data/
+          cp source/pricelist.pdf _site/source/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

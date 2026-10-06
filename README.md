@@ -1,0 +1,168 @@
+# Kerala liquor prices
+
+A static site for looking up Bevco (KSBC) FL-1 shop prices in Kerala. Search
+by brand, filter by type, size, price and supplier, compare up to three
+brands side by side. No backend: GitHub Pages serves plain HTML, CSS, JS and
+one JSON file.
+
+The data comes from KSBC's price list PDF. This repo turns that PDF into
+JSON, checks it, keeps every version, and deploys the site on push.
+
+## Requirements
+
+- Python 3.10 or newer (standard library only)
+- `pdftotext` on your PATH. Tested with **xpdf's pdftotext 4.00**, which Git
+  for Windows ships in `mingw64/bin`. Poppler's `pdftotext` has the same
+  `-raw` mode but has **not** been checked against this PDF; if you use it,
+  run `--check` first and compare the result.
+- Node 18 or newer, only for the search tests
+
+## Updating the data when a new price list comes out
+
+1. Download the new PDF from KSBC. Save it anywhere, for example `new.pdf`.
+
+2. Dry run. This parses and validates everything and prints what changed,
+   but writes nothing:
+
+   ```bash
+   python scripts/parse_pdf.py --check new.pdf
+   ```
+
+   Read the diff. It lists new items, removed items, price changes (with the
+   largest moves at both ends) and products renamed under the same code. Add
+   `--all` to print every line instead of the first 25 per section.
+
+3. If the checks passed and the diff looks believable, run it for real:
+
+   ```bash
+   python scripts/parse_pdf.py new.pdf
+   ```
+
+   That one command:
+   - writes `data/products.json` and `data/products.meta.json` (the list's
+     effective date, printed date and title, read from the PDF header)
+   - saves a copy to `data/history/<effective>_<printed>.json`
+   - archives the PDF as `source/archive/<effective>_<printed>.pdf`
+   - copies it to `source/pricelist.pdf`, which the site links to
+   - rebuilds `data/site.json` and `data/meta.json`, which the site loads
+
+   If any check fails, nothing is written. Fix the cause, or use `--force`
+   only after checking the reported rows against the PDF yourself.
+
+4. **Check a few prices by hand.** Open the new PDF, pick four products
+   across different sections (a whisky, a brandy, a beer, a wine is a good
+   spread), and add them to `tests/spot_checks.json` under the new version
+   key, which the parser printed. The tests fail until you do. That is on
+   purpose: every published list gets human eyes on it.
+
+5. Look at the uncategorised items:
+
+   ```bash
+   python scripts/parse_pdf.py --check --others
+   ```
+
+   Type comes from words in the brand name (`CATEGORY_RULES` in
+   `scripts/parse_pdf.py`). Anything without a clear word becomes `other`.
+   Change the rules there if a new list brings new patterns.
+
+6. Run the tests (next section), then commit and push. The workflow deploys.
+
+## Validation checks
+
+`parse_pdf.py` runs these on every parse, and refuses to write if any fail:
+
+| Check | Catches |
+|---|---|
+| Every text line is classified | Rows the parser did not understand being silently dropped |
+| FL1 before tax + tax + cess = FL1 after tax, per row | Prices attached to the wrong row |
+| Warehouse before tax + tax + cess x case = after tax | Column misreads |
+| FL1 price vs warehouse price per bottle stays in 1.03 to 1.35 | A price shifted from a neighbouring row |
+| Sl.No runs 1..N with no gaps or repeats | Missed or doubled rows |
+| Product codes unique, no zero or missing prices | Broken rows |
+| All page headers agree on the dates | A merged or mixed-up PDF |
+
+To run them without writing anything:
+
+```bash
+python scripts/parse_pdf.py --check
+```
+
+The test suites:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+```bash
+node --test tests/search.test.js
+```
+
+The Python tests cover the hand-checked spot prices (in the data, in the
+site file, and from a fresh parse of the PDF), the data invariants above,
+that `site.json` is not stale, that the history copy exists, and that the
+diff and validation code really catch problems. The re-parse tests skip
+when `pdftotext` is missing, which is the case in CI. The Node tests cover
+search: spacing and case, typos, sizes in the query, and that brands not in
+the list (Baileys, Chivas and others) return nothing rather than a guess.
+
+## Price history
+
+Each version in `data/history/` is:
+
+```json
+{ "meta": { "effective": "2026-05-11", "printed": "2026-09-23", "version": "2026-05-11_2026-09-23", ... },
+  "products": [ { "id": "12339021S", "brand": "...", "volume_ml": 750, "shop_price": 1420, ... } ] }
+```
+
+Product codes (`id`) are the join key across versions. Nothing reads the
+history yet; it is there so a price-history view can be built later.
+
+## First-time setup for GitHub Pages
+
+1. Put this folder in a GitHub repository and push to `main`.
+2. In the repo: Settings > Pages > Build and deployment > Source: **GitHub
+   Actions**.
+3. Tell the site its address. Share previews, the sitemap and the
+   report-an-error link all need it:
+
+   ```bash
+   python scripts/configure_site.py --site-url https://USER.github.io/REPO/ --repo-url https://github.com/USER/REPO
+   ```
+
+   Commit and push. Until this is done the workflow prints a warning.
+
+`robots.txt` only counts at the root of a domain, so on a project site
+(`USER.github.io/REPO/`) submit `sitemap.xml` in Google Search Console
+instead.
+
+## Local preview
+
+```bash
+python -m http.server 8000
+```
+
+Then open http://localhost:8000/. The offline service worker only registers
+on `localhost` or HTTPS.
+
+## Files
+
+| Path | What it is |
+|---|---|
+| `index.html`, `about.html` | The two pages |
+| `assets/app.js` | Filtering, sorting, URL state, compare tray |
+| `assets/search.js` | Typo-tolerant search, no dependencies |
+| `assets/meta.js` | Fills dates and counts from the data's metadata |
+| `assets/style.css` | All styles; see `DESIGN.md` for the reasoning |
+| `assets/fonts/` | Barlow Semi Condensed Bold, self-hosted (SIL OFL) |
+| `sw.js` | Network-first offline fallback |
+| `scripts/parse_pdf.py` | PDF to `products.json`, checks, diff, history |
+| `scripts/build_site_data.py` | `products.json` to the compact `site.json` |
+| `scripts/configure_site.py` | Site and repo URLs, sitemap, robots.txt |
+| `scripts/og-image.html` | Source for the share image `assets/og-image.png` |
+| `data/products.json` | One row per bottle (the full data) |
+| `data/history/` | Every parsed version |
+| `source/pricelist.pdf` | The current list; `source/archive/` has every version |
+| `tests/` | Spot checks, data tests, search tests |
+| `.github/workflows/deploy.yml` | Tests, then deploys to Pages |
+
+This is an unofficial lookup. It is not run by or connected to KSBC.

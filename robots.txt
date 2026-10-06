@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://niap3.github.io/beverage_lister/sitemap.xml
