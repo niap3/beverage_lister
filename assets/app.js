@@ -15,7 +15,8 @@
     whisky: 'Whisky', brandy: 'Brandy', rum: 'Rum', vodka: 'Vodka', gin: 'Gin',
     beer: 'Beer', wine: 'Wine', liqueur: 'Liqueur', tequila: 'Tequila', other: 'Other'
   };
-  var SORTS = { '': 1, 'price-asc': 1, 'price-desc': 1, litre: 1, az: 1 };
+  var SORTS = { '': 1, 'price-asc': 1, 'price-desc': 1, litre: 1, az: 1, popular: 1 };
+  var POPULAR_BADGE = 20;   // "Often looked up" badge for the top N brands
 
   var $ = function (id) { return document.getElementById(id); };
   var el = {
@@ -33,6 +34,8 @@
   var brands = [];          // prepared brand objects
   var byId = {};            // brand id (lowest product code) -> brand
   var photos = {};          // brand id -> thumbnail path (licensed photos only)
+  var popularity = null;    // { window_days, brands: { id: { score } } } or null when not configured
+  var topIds = {};          // brand ids that get the "Often looked up" badge
   var sizes = [];           // every bottle size in the list, ascending
   var state = blankState();
   var shown = PAGE;
@@ -184,6 +187,7 @@
       'price-asc': function (a, b) { return minOf(a, 'price') - minOf(b, 'price') || byName(a, b); },
       'price-desc': function (a, b) { return maxOf(b, 'price') - maxOf(a, 'price') || byName(a, b); },
       litre: function (a, b) { return minOf(a, 'ppl') - minOf(b, 'ppl') || byName(a, b); },
+      popular: function (a, b) { return score(b.b) - score(a.b) || byName(a, b); },
       az: byName
     }[state.sort];
     list.sort(cmp);
@@ -200,6 +204,11 @@
   }
 
   function money(n) { return '₹' + rupees.format(n); }
+
+  function score(b) {
+    var p = popularity && popularity.brands[b.id];
+    return p ? p.score : 0;
+  }
 
   function cmpButton(b) {
     var on = state.cmp.indexOf(b.id) !== -1;
@@ -227,8 +236,9 @@
         '</button>';
     }
     var thumb = photos[b.id] ? '<img class="thumb" src="' + esc(photos[b.id]) + '" alt="" width="44" height="56" loading="lazy">' : '';
+    var badge = topIds[b.id] ? '<p class="badge">Often looked up</p>' : '';
     return '<article class="card" data-cat="' + esc(b.cat) + '"><h2' + (thumb ? ' class="has-thumb"' : '') + '>' + thumb +
-      '<a class="card-link" href="p/' + esc(b.id) + '.html">' + esc(b.name) + '</a></h2>' +
+      '<a class="card-link" href="p/' + esc(b.id) + '.html">' + esc(b.name) + '</a></h2>' + badge +
       '<ul class="sizes" aria-label="Sizes and prices">' + cells + '</ul>' + toggle +
       '<div class="card-foot"><p class="meta"><span class="cat">' + (CAT_LABEL[b.cat] || b.cat) +
       '</span> · ' + esc(b.sup) + '</p>' + cmpButton(b) + '</div></article>';
@@ -258,7 +268,8 @@
     document.documentElement.classList.toggle('has-query', !bare);
     el.summary.textContent = (bare ? 'All ' : '') + plural(list.length, 'brand', 'brands') + ', ' +
       plural(bottles, 'bottle size', 'bottle sizes') + (bare && !state.sort ? ', A to Z' : '') +
-      (state.sort === 'litre' ? ', best value (lowest price per litre) first' : '');
+      (state.sort === 'litre' ? ', best value (lowest price per litre) first' : '') +
+      (state.sort === 'popular' && popularity ? ', most looked up on this site in the last ' + popularity.window_days + ' days first' : '');
 
     if (!out.exact) {
       el.notice.hidden = false;
@@ -309,6 +320,10 @@
       return;
     } else {
       state.cmp.push(id);
+      // Interest signal for "Most looked up"; only when the counter is on.
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({ path: 'compare/' + id, title: byId[id].name, event: true });
+      }
     }
     writeUrl();
     syncCompareButtons();
@@ -561,12 +576,45 @@
         if (!bound) { bind(); bound = true; }
         render();
         renderTray();
+        loadPopularity();
       })
       .catch(function () {
         el.summary.innerHTML = '<span class="error">Could not load the price list. ' +
           'Check your connection.</span> <button type="button" class="link-button" id="retry">Try again</button>';
         $('retry').addEventListener('click', load);
       });
+  }
+
+  // Optional: only exists once GoatCounter is set up. Adds the sort option
+  // and badges, and re-renders; a missing file changes nothing.
+  function loadPopularity() {
+    fetch('data/popularity.json')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (p) {
+        if (!p || !p.brands || !Object.keys(p.brands).length) { dropPopularSort(); return; }
+        popularity = p;
+        Object.keys(p.brands)
+          .sort(function (a, b) { return p.brands[b].score - p.brands[a].score; })
+          .slice(0, POPULAR_BADGE)
+          .forEach(function (id) { topIds[id] = true; });
+        var o = document.createElement('option');
+        o.value = 'popular';
+        o.textContent = 'Most looked up';
+        el.sort.appendChild(o);
+        el.sort.value = state.sort;
+        render();
+      })
+      .catch(dropPopularSort);
+  }
+
+  // A shared ?sort=popular link on a site without popularity data falls back
+  // to the default order instead of a blank sort menu.
+  function dropPopularSort() {
+    if (state.sort !== 'popular') return;
+    state.sort = '';
+    el.sort.value = '';
+    writeUrl();
+    render();
   }
 
   load();

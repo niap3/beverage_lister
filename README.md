@@ -154,6 +154,34 @@ checks every id and match string against the current list. Commit
 `data/media.json` and `assets/products/`. Look at a photo's label before
 adding it: a photo of a different variant is worse than no photo.
 
+## Most looked up (optional)
+
+The "Most looked up" sort and the "Often looked up" badge are off until
+GoatCounter is set up. GoatCounter counts page views without cookies and
+without storing IP addresses. What it measures: visitors to each brand page
+plus "Compare" taps, over 30 days, on this site only. It is interest, not
+sales, and the site labels it that way.
+
+1. Create a free account at goatcounter.com and pick a site code, e.g.
+   `beverage-lister` (the site is then `beverage-lister.goatcounter.com`).
+2. Tell the site the code, then commit and push:
+
+   ```bash
+   python scripts/configure_site.py --goatcounter beverage-lister
+   ```
+
+3. In GoatCounter, create an API token that can read statistics, and store
+   it as a repository secret (gh prompts for the value; it is never shown):
+
+   ```bash
+   gh secret set GOATCOUNTER_TOKEN -R niap3/beverage_lister
+   ```
+
+On every deploy, and every Monday 03:00 IST, CI runs
+`scripts/fetch_popularity.py` into the published `data/popularity.json`.
+The sort and badges appear once at least one brand has 3 or more look-ups.
+To turn counting off: `python scripts/configure_site.py --goatcounter ""`.
+
 ## Brand pages and catalogue
 
 `scripts/build_pages.py` writes `p/<id>.html` for every brand, the
@@ -204,7 +232,9 @@ on `localhost` or HTTPS.
 | `assets/products/` | Small copies of the licensed photos |
 | `scripts/parse_pdf.py` | PDF to `products.json`, checks, diff, history |
 | `scripts/build_site_data.py` | `products.json` to the compact `site.json` |
-| `scripts/configure_site.py` | Site and repo URLs, sitemap, robots.txt |
+| `scripts/configure_site.py` | Site and repo URLs, GoatCounter code, robots.txt |
+| `scripts/fetch_popularity.py` | GoatCounter counts to `data/popularity.json` (CI) |
+| `scripts/finalize_site.py` | Cache-busts CSS/JS and adds the counter on the built site (CI) |
 | `scripts/og-image.html` | Source for the share image `assets/og-image.png` |
 | `data/products.json` | One row per bottle (the full data) |
 | `data/history/` | Every parsed version |

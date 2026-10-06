@@ -31,6 +31,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--site-url")
     ap.add_argument("--repo-url")
+    ap.add_argument("--goatcounter", help="GoatCounter site code (the part before .goatcounter.com); '' to turn off")
     args = ap.parse_args()
 
     old = json.loads(CONFIG.read_text(encoding="utf-8"))
@@ -39,6 +40,8 @@ def main():
         new["site_url"] = args.site_url if args.site_url.endswith("/") else args.site_url + "/"
     if args.repo_url:
         new["repo_url"] = args.repo_url.rstrip("/")
+    if args.goatcounter is not None:
+        new["goatcounter"] = args.goatcounter.strip().lower()
     for key in ("site_url", "repo_url"):
         if not new[key].startswith("https://"):
             raise SystemExit(f"{key} must start with https://")
@@ -53,7 +56,8 @@ def main():
     (ROOT / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\n\nSitemap: {new['site_url']}sitemap.xml\n", encoding="utf-8")
     CONFIG.write_text(json.dumps(new, indent=1) + "\n", encoding="utf-8")
-    print(f"site_url = {new['site_url']}\nrepo_url = {new['repo_url']}")
+    print(f"site_url = {new['site_url']}\nrepo_url = {new['repo_url']}\n"
+          f"goatcounter = {new.get('goatcounter') or '(off)'}")
     print("Updated", ", ".join(PAGES), "and wrote robots.txt")
 
     sys.path.insert(0, str(Path(__file__).resolve().parent))

@@ -745,6 +745,17 @@ body.has-tray { padding-bottom: 72px; }
 .small { font-size: 0.875rem; color: var(--muted); }
 
 .price-quick { width: 100%; }
+.badge {
+  display: inline-block;
+  align-self: flex-start;
+  margin: -4px 14px 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--leaf);
+  color: var(--on-leaf);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
 .panel-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 4px; }
 .quick {
   min-height: 40px; padding: 0 12px;

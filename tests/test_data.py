@@ -19,6 +19,8 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import build_pages  # noqa: E402
 import build_site_data  # noqa: E402
 import fetch_media  # noqa: E402
+import fetch_popularity  # noqa: E402
+import finalize_site  # noqa: E402
 import parse_pdf  # noqa: E402
 
 SPOT = json.loads((ROOT / "tests" / "spot_checks.json").read_text(encoding="utf-8"))
@@ -215,6 +217,56 @@ class BrandPages(unittest.TestCase):
         self.assertEqual(build_pages.inr(15300), "15,300")
         self.assertEqual(build_pages.inr(125000), "1,25,000")
         self.assertEqual(build_pages.inr(980), "980")
+
+
+class Popularity(unittest.TestCase):
+    def test_tally_counts_brand_pages_and_compare_events(self):
+        rows = [
+            {"path": "/beverage_lister/p/12702731X.html", "count": 7},
+            {"path": "/beverage_lister/p/12702731X.html", "count": 3},   # second path variant
+            {"path": "compare/12702731X", "count": 2, "event": True},
+            {"path": "/beverage_lister/", "count": 99},                  # home page: not a brand
+            {"path": "/beverage_lister/p/ZZZZZZZZZ.html", "count": 5},   # not in the list
+            {"path": "compare/../etc", "count": 1, "event": True},
+        ]
+        self.assertEqual(fetch_popularity.tally(rows, {"12702731X"}),
+                         {"12702731X": {"views": 10, "compares": 2}})
+
+    def test_no_token_writes_nothing(self):
+        import os, tempfile
+        out = Path(tempfile.mkdtemp()) / "p.json"
+        old = os.environ.pop("GOATCOUNTER_TOKEN", None)
+        argv = sys.argv
+        try:
+            sys.argv = ["x", str(out)]
+            self.assertEqual(fetch_popularity.main(), 0)
+        finally:
+            sys.argv = argv
+            if old is not None:
+                os.environ["GOATCOUNTER_TOKEN"] = old
+        self.assertFalse(out.exists())
+
+
+class FinalizeSite(unittest.TestCase):
+    def test_stamps_assets_and_renames_cache(self):
+        import tempfile
+        site = Path(tempfile.mkdtemp())
+        (site / "assets").mkdir()
+        for a in finalize_site.ASSETS:
+            (site / a).write_text("x", encoding="utf-8")
+        (site / "index.html").write_text('<link href="assets/style.css"><script src="assets/app.js"></script></body>',
+                                         encoding="utf-8")
+        (site / "sw.js").write_text("var CACHE = 'prices-v3';", encoding="utf-8")
+        argv = sys.argv
+        try:
+            sys.argv = ["x", str(site)]
+            finalize_site.main()
+        finally:
+            sys.argv = argv
+        page = (site / "index.html").read_text(encoding="utf-8")
+        self.assertRegex(page, r'assets/style\.css\?v=[0-9a-f]{10}"')
+        self.assertRegex(page, r'assets/app\.js\?v=[0-9a-f]{10}"')
+        self.assertNotIn("prices-v3", (site / "sw.js").read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

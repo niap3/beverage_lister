@@ -6,6 +6,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Weekly refresh of the "Most looked up" counts, even with no new prices.
+  schedule:
+    - cron: "30 21 * * 0"   # Sunday 21:30 UTC = Monday 03:00 in Kerala
 
 permissions:
   contents: read
@@ -63,8 +66,12 @@ jobs:
           cp -r assets p catalogue _site/
           cp data/site.json data/meta.json _site/data/
           cp source/pricelist.pdf _site/source/
-      - name: Cache-bust CSS and JS
-        run: python scripts/stamp_assets.py _site
+      - name: Popularity from GoatCounter (skipped until configured)
+        env:
+          GOATCOUNTER_TOKEN: ${{ secrets.GOATCOUNTER_TOKEN }}
+        run: python scripts/fetch_popularity.py _site/data/popularity.json
+      - name: Cache-bust CSS and JS, add visit counter
+        run: python scripts/finalize_site.py _site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
