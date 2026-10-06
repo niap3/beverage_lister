@@ -63,6 +63,8 @@ jobs:
           cp -r assets p catalogue _site/
           cp data/site.json data/meta.json _site/data/
           cp source/pricelist.pdf _site/source/
+      - name: Cache-bust CSS and JS
+        run: python scripts/stamp_assets.py _site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -27,14 +27,16 @@ self.addEventListener('fetch', function (e) {
   if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
   if (/\.pdf$/i.test(new URL(req.url).pathname)) return;   // 1.5 MB, not worth caching
   e.respondWith(
-    fetch(req).then(function (res) {
+    // no-cache: always revalidate with the server (cheap 304s), never trust a
+    // possibly stale HTTP-cache copy while online.
+    fetch(req, { cache: 'no-cache' }).then(function (res) {
       if (res.ok) {
         var copy = res.clone();
         caches.open(CACHE).then(function (c) { c.put(req, copy); });
       }
       return res;
     }).catch(function () {
-      return caches.match(req, { ignoreSearch: req.mode === 'navigate' });
+      return caches.match(req, { ignoreSearch: true });   // ?v= stamps and ?q= searches
     })
   );
 });

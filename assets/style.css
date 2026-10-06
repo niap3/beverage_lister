@@ -384,6 +384,7 @@ input[type="number"] { width: 7.5em; }
   display: block;
   margin: 2px 0 3px;
   font: 700 clamp(1.75rem, 8vw, 2.25rem)/1 var(--price-font);
+  font-size: clamp(1.5rem, 8.6cqi, 2.25rem);   /* per card width where supported */
   font-variant-numeric: tabular-nums lining-nums;
   color: var(--ink);
   white-space: nowrap;
@@ -838,6 +839,7 @@ html.has-query .intro { display: none; }
 
 /* Cards: soft edge, rounder, a type stripe on top. */
 .card { border-radius: 10px; box-shadow: var(--shadow); border-top: 4px solid var(--accent, var(--rule)); }
+.card, .product-prices { container-type: inline-size; }
 .card h2 { font-size: 0.96875rem; letter-spacing: 0.015em; }
 .sizes li { padding: 10px 12px 12px 14px; }
 .per-litre { font-size: 0.78125rem; }
