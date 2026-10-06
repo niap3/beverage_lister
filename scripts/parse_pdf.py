@@ -3,6 +3,9 @@
 Usage:
   python scripts/parse_pdf.py [new.pdf]        parse, validate, diff, save, rebuild site data
   python scripts/parse_pdf.py --check [x.pdf]  parse and validate only; writes nothing
+  python scripts/parse_pdf.py --history-only old.pdf
+                                               add an OLDER list to data/history (for price
+                                               history) without touching the current data
   Options: --all (print every diff line), --others (list "other"-category items),
            --no-site (skip rebuilding data/site.json), --force (write despite problems)
 
@@ -17,7 +20,7 @@ no changes. A run that writes does all of this:
      history can be built later, and archives the PDF as
      source/archive/<effective>_<printed>.pdf
   5. copies the PDF to source/pricelist.pdf (what the site links to)
-  6. rebuilds data/site.json and data/meta.json for the site
+  6. rebuilds data/site.json, data/meta.json, the brand pages and the catalogue
 
 Why `pdftotext -raw` and not `-layout`:
 In this PDF the FL1-shop price columns are a separate text block with a
@@ -345,8 +348,10 @@ def main():
     ap.add_argument("--check", action="store_true", help="parse and validate only; write nothing")
     ap.add_argument("--all", action="store_true", help="print every diff line")
     ap.add_argument("--others", action="store_true", help="list items categorised as 'other'")
-    ap.add_argument("--no-site", action="store_true", help="do not rebuild data/site.json")
+    ap.add_argument("--no-site", action="store_true", help="do not rebuild the site data and pages")
     ap.add_argument("--force", action="store_true", help="write even if validation found problems")
+    ap.add_argument("--history-only", action="store_true",
+                    help="save this list to data/history and the archive only; keep the current data")
     args = ap.parse_args()
     pdf = Path(args.pdf).resolve()
     if not pdf.is_file():
@@ -371,9 +376,10 @@ def main():
     if old:
         print_diff(old_meta.get("version", "previous data/products.json"), meta["version"],
                    diff(old, products), args.all)
-    if old_meta.get("effective") and meta["effective"] < old_meta["effective"]:
-        print(f"\nNOTE: this list ({meta['effective']}) is OLDER than the current data "
-              f"({old_meta['effective']}).")
+    older = bool(old_meta.get("version")) and meta["version"] < old_meta["version"]
+    if older:
+        print(f"\nNOTE: this list ({meta['version']}) is OLDER than the current data "
+              f"({old_meta['version']}).")
 
     if args.check:
         print("\n--check: nothing written.")
@@ -382,17 +388,30 @@ def main():
         sys.exit("\nNot writing anything because of the problems above. "
                  "Fix the parser, or re-run with --force if you have checked them by hand.")
 
-    meta["pdf"] = "source/pricelist.pdf"
-    meta["parsed_from"] = pdf.name
-    dump(OUT, products)
-    dump(META_OUT, meta)
-    hist = HISTORY / f"{meta['version']}.json"
-    dump(hist, {"meta": meta, "products": products})
+    if older and not args.history_only and not args.force:
+        sys.exit("Not replacing the current list with an older one. To add it to the price "
+                 "history instead, re-run with --history-only.")
 
+    meta["parsed_from"] = pdf.name
+    hist = HISTORY / f"{meta['version']}.json"
     ARCHIVE.mkdir(parents=True, exist_ok=True)
     archived = ARCHIVE / f"{meta['version']}.pdf"
     if not archived.exists():
         shutil.copyfile(pdf, archived)
+
+    if args.history_only:
+        dump(hist, {"meta": dict(meta, pdf=f"source/archive/{meta['version']}.pdf"), "products": products})
+        print(f"\nWrote {hist.relative_to(ROOT)} and archived the PDF; current data unchanged.")
+        if not args.no_site:
+            sys.path.insert(0, str(Path(__file__).resolve().parent))
+            import build_pages
+            build_pages.main()
+        return
+
+    meta["pdf"] = "source/pricelist.pdf"
+    dump(OUT, products)
+    dump(META_OUT, meta)
+    dump(hist, {"meta": meta, "products": products})
     if pdf != DEFAULT_PDF.resolve():
         shutil.copyfile(pdf, DEFAULT_PDF)
 
@@ -402,7 +421,9 @@ def main():
     if not args.no_site:
         sys.path.insert(0, str(Path(__file__).resolve().parent))
         import build_site_data
+        import build_pages
         build_site_data.main()
+        build_pages.main()
 
 
 if __name__ == "__main__":

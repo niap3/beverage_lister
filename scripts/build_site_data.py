@@ -30,6 +30,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "data" / "products.json"
 SRC_META = ROOT / "data" / "products.meta.json"   # written by parse_pdf.py from the PDF header
+MEDIA = ROOT / "data" / "media.json"              # written by fetch_media.py; optional
 OUT = ROOT / "data" / "site.json"
 META_OUT = ROOT / "data" / "meta.json"
 
@@ -38,8 +39,8 @@ CATEGORY_ORDER = ["whisky", "brandy", "rum", "vodka", "gin", "beer", "wine",
                   "liqueur", "tequila", "other"]
 
 
-def build(products, src_meta):
-    """Pure: product list + list metadata -> the site.json object."""
+def build(products, src_meta, media=None):
+    """Pure: product list + list metadata (+ media) -> the site.json object."""
     groups = OrderedDict()
     for p in products:
         g = groups.setdefault(p["brand"], {"supplier": p["supplier"],
@@ -69,13 +70,17 @@ def build(products, src_meta):
 
     meta = {k: src_meta[k] for k in ("source", "title", "effective", "printed", "version", "pdf")}
     meta.update(bottles=len(products), brands=len(brands))
-    return {"meta": meta, "suppliers": suppliers, "categories": categories, "brands": brands}
+    # Thumbnail path per brand id, only for brands in this list.
+    photos = {i: p["path"] for i, p in ((media or {}).get("photos") or {}).items() if i in set(ids)}
+    return {"meta": meta, "suppliers": suppliers, "categories": categories, "brands": brands,
+            "photos": photos}
 
 
 def main():
     products = json.loads(SRC.read_text(encoding="utf-8"))
     src_meta = json.loads(SRC_META.read_text(encoding="utf-8"))
-    out = build(products, src_meta)
+    media = json.loads(MEDIA.read_text(encoding="utf-8")) if MEDIA.exists() else None
+    out = build(products, src_meta, media)
     brands, meta = out["brands"], out["meta"]
     OUT.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     META_OUT.write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")

@@ -5,8 +5,8 @@
  * is the last list this phone saw, never a stale list over a working
  * connection. Same-origin GETs only.
  */
-var CACHE = 'prices-v2';
-var CORE = ['./', 'index.html', 'about.html', 'assets/style.css', 'assets/meta.js', 'assets/search.js',
+var CACHE = 'prices-v3';
+var CORE = ['./', 'index.html', 'about.html', 'catalogue.html', 'assets/style.css', 'assets/meta.js', 'assets/search.js',
             'assets/app.js', 'assets/fonts/barlow-semi-condensed-latin-700-normal.woff2',
             'data/site.json', 'data/meta.json'];
 

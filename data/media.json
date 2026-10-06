@@ -1,0 +1,412 @@
+{
+ "fetched": "2026-10-06",
+ "photos": {
+  "13074211V": {
+   "artist": "Pinakpani",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Old_Monk_Rum.jpg",
+   "width": 360,
+   "height": 480,
+   "path": "assets/products/13074211V.jpg",
+   "alt": "A 180 ml bottle of Old Monk 7 Years Old Blended Very Old Vatted XXX Rum",
+   "tier": "exact",
+   "note": "Label: 7 Years Old Blended, Old Monk, Very Old Vatted, XXX Rum"
+  },
+  "12702731X": {
+   "artist": "Gargarapalvin",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:McDowell%27s_No.1,_Indian_whisky.jpg",
+   "width": 360,
+   "height": 480,
+   "path": "assets/products/12702731X.jpg",
+   "alt": "A bottle of McDowell's No.1 Reserve Whisky",
+   "tier": "exact",
+   "note": "Label: McDowell's No1 Reserve Whisky"
+  },
+  "13702321Q": {
+   "artist": "Pinakpani",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Mc_Dowell_No._1_Rum.jpg",
+   "width": 360,
+   "height": 480,
+   "path": "assets/products/13702321Q.jpg",
+   "alt": "A bottle of McDowell's No.1 Celebration Matured XXX Rum",
+   "tier": "exact",
+   "note": "Label: McDowell's No1 Celebration, Matured XXX Rum. The list adds 'Gold'; the other Celebration entry is 'Luxury XXX', which this is not."
+  },
+  "12339021S": {
+   "artist": "Kanhaiyalal Chouhan",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Royal_stag_wishky_.jpg",
+   "width": 360,
+   "height": 480,
+   "path": "assets/products/12339021S.jpg",
+   "alt": "The box of Seagram's Royal Stag Deluxe Whisky",
+   "tier": "exact",
+   "note": "Box: Royal Stag Deluxe Whisky"
+  },
+  "130720119": {
+   "artist": "Deepak G Goswami",
+   "license": "CC BY-SA 3.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bacardi_rum_bottle.jpg",
+   "width": 360,
+   "height": 480,
+   "path": "assets/products/130720119.jpg",
+   "alt": "A bottle of Bacardi Limón rum",
+   "tier": "exact",
+   "note": "Label: Bacardi Limón"
+  },
+  "21583534Q": {
+   "artist": "Uttamstef12",
+   "license": "CC BY-SA 3.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Heineken_Bottle.jpg",
+   "width": 360,
+   "height": 959,
+   "path": "assets/products/21583534Q.jpg",
+   "alt": "A 330 ml bottle of Heineken Original lager",
+   "tier": "exact",
+   "note": "Label: Heineken Original, Pure Malt Lager"
+  },
+  "16813841E": {
+   "artist": "Alex P. Kok",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Smirnoff_Vodka_bottle_front.jpg",
+   "width": 360,
+   "height": 576,
+   "path": "assets/products/16813841E.jpg",
+   "alt": "A bottle of Smirnoff Vodka",
+   "tier": "exact",
+   "note": "Label: Smirnoff Vodka (a US one-litre bottle; same product name)"
+  },
+  "12355991W": {
+   "artist": "John Distilleries",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Brilliance_Single_Malt_Whisky_from_Paul_John.png",
+   "width": 360,
+   "height": 616,
+   "path": "assets/products/12355991W.jpg",
+   "alt": "A bottle and tube of Paul John Brilliance Indian Single Malt Whisky",
+   "tier": "exact",
+   "note": "Label: Paul John Brilliance. Uploaded by John Distilleries."
+  },
+  "12355021W": {
+   "artist": "John Distilleries",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bold_Single_Malt_Whisky_from_Paul_John.png",
+   "width": 360,
+   "height": 616,
+   "path": "assets/products/12355021W.jpg",
+   "alt": "A bottle and tube of Paul John Bold Indian Single Malt Whisky",
+   "tier": "exact",
+   "note": "Label: Paul John Bold. Uploaded by John Distilleries."
+  },
+  "120130913": {
+   "artist": "Matt Wunderle",
+   "license": "CC BY 2.0",
+   "license_url": "https://creativecommons.org/licenses/by/2.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:A_50ml_bottle_of_Amrut_Fusion_single_malt_whisky.jpg",
+   "width": 360,
+   "height": 360,
+   "path": "assets/products/120130913.jpg",
+   "alt": "A small bottle of Amrut Fusion Single Malt Whisky",
+   "tier": "exact",
+   "note": "Label: Amrut Fusion Single Malt Whisky (a 50 ml miniature; the list sells 750 ml)"
+  },
+  "21583234V": {
+   "artist": "Indrajit Das",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Kingfisher_Storm_Beer_02.jpg",
+   "width": 360,
+   "height": 480,
+   "path": "assets/products/21583234V.jpg",
+   "alt": "A bottle and glass of Kingfisher Storm Strong Beer",
+   "tier": "family",
+   "note": "Label: Kingfisher Storm Strong Beer. Does not say Superior or Select."
+  },
+  "21583474S": {
+   "artist": "Indrajit Das",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Kingfisher_Storm_Beer_02.jpg",
+   "width": 360,
+   "height": 480,
+   "path": "assets/products/21583234V.jpg",
+   "alt": "A bottle and glass of Kingfisher Storm Strong Beer",
+   "tier": "family",
+   "note": "Label: Kingfisher Storm Strong Beer. Does not say Superior or Select."
+  },
+  "21764165Q": {
+   "artist": "Bruce The Deus",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Corona_Extra_beer_bottle_(2019).png",
+   "width": 360,
+   "height": 1323,
+   "path": "assets/products/21764165Q.jpg",
+   "alt": "A bottle of Corona Extra beer",
+   "tier": "family",
+   "note": "Label: Corona Extra. The list has five Corona Extra entries."
+  },
+  "21764505U": {
+   "artist": "Bruce The Deus",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Corona_Extra_beer_bottle_(2019).png",
+   "width": 360,
+   "height": 1323,
+   "path": "assets/products/21764165Q.jpg",
+   "alt": "A bottle of Corona Extra beer",
+   "tier": "family",
+   "note": "Label: Corona Extra. The list has five Corona Extra entries."
+  },
+  "21764755U": {
+   "artist": "Bruce The Deus",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Corona_Extra_beer_bottle_(2019).png",
+   "width": 360,
+   "height": 1323,
+   "path": "assets/products/21764165Q.jpg",
+   "alt": "A bottle of Corona Extra beer",
+   "tier": "family",
+   "note": "Label: Corona Extra. The list has five Corona Extra entries."
+  },
+  "21764875S": {
+   "artist": "Bruce The Deus",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Corona_Extra_beer_bottle_(2019).png",
+   "width": 360,
+   "height": 1323,
+   "path": "assets/products/21764165Q.jpg",
+   "alt": "A bottle of Corona Extra beer",
+   "tier": "family",
+   "note": "Label: Corona Extra. The list has five Corona Extra entries."
+  },
+  "21764885S": {
+   "artist": "Bruce The Deus",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Corona_Extra_beer_bottle_(2019).png",
+   "width": 360,
+   "height": 1323,
+   "path": "assets/products/21764165Q.jpg",
+   "alt": "A bottle of Corona Extra beer",
+   "tier": "family",
+   "note": "Label: Corona Extra. The list has five Corona Extra entries."
+  }
+ },
+ "descriptions": [
+  {
+   "label": "the Old Monk brand",
+   "match": [
+    "OLD MONK"
+   ],
+   "extract": "Old Monk Rum is a vatted Indian dark rum, launched in 1954. It is produced in Ghaziabad, Uttar Pradesh, India and has a registered office in Solan, Himachal Pradesh.",
+   "shortened": true,
+   "url": "https://en.wikipedia.org/wiki/Old_Monk",
+   "revision": "1364497292"
+  },
+  {
+   "label": "the McDowell's No.1 brand",
+   "match": [
+    "MCDOWELL'S NO.1",
+    "NO.1 MCDOWELL'S"
+   ],
+   "extract": "McDowell's No.1 is an Indian brand of spirits manufactured by United Spirits Limited (USL), a subsidiary of Diageo. It is USL's flagship brand and the largest umbrella spirits brand in the world, comprising three categories – whisky, brandy and rum. The brand also has bottled water and soda. The brand began with the launch of McDowell's No.1 Brandy in 1963–64. The brand's slogan is No1 Yaari Ka No1 Spirit.",
+   "shortened": false,
+   "url": "https://en.wikipedia.org/wiki/McDowell's_No.1",
+   "revision": "1344806121"
+  },
+  {
+   "label": "the Royal Stag brand",
+   "match": [
+    "ROYAL STAG"
+   ],
+   "extract": "Royal Stag, also known as Seagram's Royal Stag, is an Indian whisky launched in 1995. It is available in many countries across the world in various pack sizes. It is Pernod Ricard's best selling brand by volume. It is a blend of grain spirits and imported Scotch malts. It is commonly available in 180 mL bottles. The brand is named after a species of deer famous for its antlers, that is also featured in its logo. It is produced in several company-owned as well as bottler-owned distilleries. It was the first whisky brand launched in India that did not use any artificial flavours.",
+   "shortened": false,
+   "url": "https://en.wikipedia.org/wiki/Royal_Stag",
+   "revision": "1376449740"
+  },
+  {
+   "label": "the Officer's Choice brand",
+   "match": [
+    "OFFICER'S CHOICE"
+   ],
+   "extract": "Officer's Choice, commonly known as OC, is an Indian whisky brand which is owned by Allied Blenders & Distillers (ABD), formerly BDA. It is considered to be one of the largest spirit brands in the world. In 2015 Officer's Choice overtook Smirnoff vodka to become the world's largest selling spirit brand. In calendar year 2014, the brand sold 28.4 million cases, higher than any other spirit brand in the world. Compared to the other Indian whiskies which are mainly made from molasses, OC is made from grain.",
+   "shortened": false,
+   "url": "https://en.wikipedia.org/wiki/Officer's_Choice",
+   "revision": "1371463211"
+  },
+  {
+   "label": "the Kingfisher brand",
+   "match": [
+    "KINGFISHER "
+   ],
+   "extract": "Kingfisher is an Indian beer brewed by United Breweries Group, Bangalore, India. The brand was first introduced in 1857 and then relaunched in 1978 by Vijay Mallya.",
+   "shortened": true,
+   "url": "https://en.wikipedia.org/wiki/Kingfisher_(beer)",
+   "revision": "1367024251"
+  },
+  {
+   "label": "Bacardi, the company",
+   "match": [
+    "BACARDI"
+   ],
+   "extract": "Bacardi Limited is the largest privately held, family-owned spirits company in the world. Originally known for its Bacardí brand of white rum, it now has a portfolio of more than 200 brands and labels. Founded in Cuba in 1862 by Facundo Bacardí i Massó, a Spanish businessman born in Sitges, Bacardi Limited has been family-owned for seven generations, and employs more than 8,000 people with sales in approximately 170 countries. Bacardi Limited is the group of companies as a whole and includes Bacardi International Limited.",
+   "shortened": false,
+   "url": "https://en.wikipedia.org/wiki/Bacardi",
+   "revision": "1370414611"
+  },
+  {
+   "label": "the Smirnoff brand",
+   "match": [
+    "SMIRNOFF"
+   ],
+   "extract": "Smirnoff is a brand of vodka owned and produced by the British company Diageo. The Smirnoff brand began with a vodka distillery founded in Moscow by Pyotr Arsenievich Smirnov (1831–1898), but its modern incarnation traces back to the 1930s, by American liquor distributor Heublein. Distributed in 130 countries, it is manufactured in different countries depending on market, but is not currently produced in Russia or anywhere in Eastern Europe.",
+   "shortened": false,
+   "url": "https://en.wikipedia.org/wiki/Smirnoff",
+   "revision": "1377490042"
+  },
+  {
+   "label": "Heineken lager",
+   "match": [
+    "HEINEKEN"
+   ],
+   "extract": "It is typically sold in a green bottle with a red star.",
+   "shortened": true,
+   "url": "https://en.wikipedia.org/wiki/Heineken",
+   "revision": "1365834085"
+  },
+  {
+   "label": "the Budweiser brand",
+   "match": [
+    "BUDWEISER"
+   ],
+   "extract": "Budweiser is an American-style pale lager, a brand of Belgian company AB InBev. Introduced in 1876 by Carl Conrad & Co. of St. Louis, Missouri, Budweiser is one of the largest selling beers in the United States.",
+   "shortened": true,
+   "url": "https://en.wikipedia.org/wiki/Budweiser",
+   "revision": "1377044586"
+  },
+  {
+   "label": "Amrut Distilleries, the maker",
+   "match": [
+    "AMRUT"
+   ],
+   "extract": "Amrut Distilleries Ltd is an Indian company that produces distilled beverages. It is best known for its eponymous Amrut brand of single malt whisky, which is the first single malt whisky to be made in India. The brand became famous after world famous whisky connoisseur Jim Murray gave it a rating of 82 out of 100 in 2005 and 2010. In 2010, Murray named Amrut Fusion single malt whisky as the third best in the world. John Hansell, editor of American magazine Whisky Advocate, wrote that \"India's Amrut distillery changed the way many think of Indian whisky - that it was, in the past, just cheap Scotch whisky blended with who knows what and sold as Indian whisky. Amrut is making whisky, and it's very good\". In 2019, Amrut Fusion Single Malt Whiskey was awarded the \"World Whiskey of the Year Award\" and Amrut Distilleries was awarded \"Word Whiskey Producer of the Year\" at the 2019 Bartender Spirits Awards in San Francisco.",
+   "shortened": false,
+   "url": "https://en.wikipedia.org/wiki/Amrut_Distilleries",
+   "revision": "1364497033"
+  },
+  {
+   "label": "Paul John whisky",
+   "match": [
+    "PAUL JOHN INDIAN SINGLE MALT"
+   ],
+   "extract": "Paul John Whisky is a brand of Indian single malt and single cask whisky, manufactured by John Distilleries. The brand launched in London, England on 4 October 2012. Paul John Whisky is made from Indian 6-row malted barley and, for some variants, imported Islay and Aberdeen peat, distilled in traditional copper pot stills and then matured in charred American Oak casks at the company's distillery in Goa, India.",
+   "shortened": false,
+   "url": "https://en.wikipedia.org/wiki/Paul_John_(whisky)",
+   "revision": "1370447567"
+  },
+  {
+   "label": "the Corona brand",
+   "match": [
+    "CORONA EXTRA"
+   ],
+   "extract": "Corona is a Mexican brand of beer produced by Grupo Modelo in Mexico. It is brewed, exported, and distributed globally by Grupo Modelo's parent company AB InBev. In the United States and Guam, Constellation Brands is the exclusive licensee and sole importer distributor of Corona. The beer is also brewed in China for the Australasia market. It is one of the top-selling brands of imported beer in the United States. It is often served with a wedge of lime or lemon in the neck of the bottle to add tartness and flavor. The recipe for the mash bill includes corn as well as the barley malt and hops traditionally used for making beer.",
+   "shortened": false,
+   "url": "https://en.wikipedia.org/wiki/Corona_(beer)",
+   "revision": "1372666513"
+  },
+  {
+   "label": "the Hoegaarden brewery",
+   "match": [
+    "HOEGAARDEN"
+   ],
+   "extract": "Hoegaarden Brewery is a brewery in Hoegaarden, Belgium, and the producer of a witbier, a type of wheat beer. Hoegaarden de-emphasizes hops, and is unfiltered, giving it the hazy, or milky, appearance--which makes it a wit (white) beer.",
+   "shortened": false,
+   "url": "https://en.wikipedia.org/wiki/Hoegaarden_Brewery",
+   "revision": "1357190678"
+  },
+  {
+   "label": "Sula Vineyards, the winery",
+   "match": [
+    "SULA "
+   ],
+   "extract": "Sula Vineyards is a winery and vineyard located in the Nashik region of western India, approximately 180 kilometres (110 mi) northeast of Mumbai. It was founded by Rajeev Samant in 1999. Sula has grown to be India's largest and most awarded wine brand. Sula introduced grape varietals such as Chenin blanc, Sauvignon blanc, Riesling and Zinfandel in India and is the leading player in the Indian wine industry.",
+   "shortened": false,
+   "url": "https://en.wikipedia.org/wiki/Sula_Vineyards",
+   "revision": "1350739162"
+  },
+  {
+   "label": "the Blenders Pride brand",
+   "match": [
+    "BLENDERS PRIDE"
+   ],
+   "extract": "Blenders Pride launched in 1995. It is one of the most popular brand of Indian whisky, owned by Pernod Ricard. It is a blend of Indian grain spirits and imported Scotch malt.",
+   "shortened": false,
+   "url": "https://en.wikipedia.org/wiki/Blenders_Pride",
+   "revision": "1317847039"
+  },
+  {
+   "label": "the Bagpiper brand",
+   "match": [
+    "BAGPIPER"
+   ],
+   "extract": "Bagpiper is a brand of Indian whisky, manufactured by United Spirits Ltd (USL), a subsidiary of Diageo. It was launched in October 1976. Bagpiper is sold in a square bottle with black and gold packaging design. The company describes the whisky's flavour as \"a light malty aroma and a hint of a smooth woody character, owing to the use of malt spirits specifically matured in pre-identified American oak casks\". It is similar to a blended whisky flavored with pot still malt whisky, but the neutral spirits used as base are distilled from molasses instead of grain.",
+   "shortened": false,
+   "url": "https://en.wikipedia.org/wiki/Bagpiper_(whisky)",
+   "revision": "1343092408"
+  },
+  {
+   "label": "the Signature brand",
+   "match": [
+    "SIGNATURE RARE AGED WHISKY"
+   ],
+   "extract": "Signature, also known as McDowell's Signature, is a brand of Indian whisky, manufactured by United Spirits Ltd (USL), a subsidiary of Diageo. It was launched in 1994. Signature is a blend of imported Scotch whisky and locally produced products. Signature is sold in octagonal bottles which were designed by London-based design firm Claessens International, who also designed the packaging of the bottle. It is available in two variants – Signature Rare Aged and Signature Premier Grain.",
+   "shortened": false,
+   "url": "https://en.wikipedia.org/wiki/Signature_(whisky)",
+   "revision": "1295718402"
+  },
+  {
+   "label": "the Antiquity brand",
+   "match": [
+    "ANTIQUITY"
+   ],
+   "extract": "Antiquity is a brand of Indian whisky, manufactured by United Spirits Ltd (USL), a subsidiary of Diageo. It was launched in 1992 and is available in two variants – Antiquity Blue and Antiquity Rare.",
+   "shortened": false,
+   "url": "https://en.wikipedia.org/wiki/Antiquity_(whisky)",
+   "revision": "1312647249"
+  },
+  {
+   "label": "the Romanov brand",
+   "match": [
+    "ROMANOV"
+   ],
+   "extract": "Romanov is a brand of vodka manufactured and marketed by United Spirits, a subsidiary of United Breweries Group. The brand derives its name from the Romanov dynasty that ruled the Russian Empire from 1612 to 1917. It has a two-star rating from the International Taste and Quality Institute.",
+   "shortened": true,
+   "url": "https://en.wikipedia.org/wiki/Romanov_(vodka)",
+   "revision": "1357866360"
+  },
+  {
+   "label": "the Black Dog brand",
+   "match": [
+    "BLACK DOG"
+   ],
+   "extract": "Black Dog is a brand of blended Scotch whisky produced by the Indian beverage company United Spirits Limited (USL), a subsidiary of Diageo.",
+   "shortened": false,
+   "url": "https://en.wikipedia.org/wiki/Black_Dog_(whisky)",
+   "revision": "1359337919"
+  }
+ ]
+}

@@ -34,9 +34,11 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Search tests
         run: node --test tests/search.test.js
+      - name: Pages build
+        run: python scripts/build_pages.py
       - name: Warn if site URLs are still placeholders
         run: |
-          if grep -q "YOUR-GITHUB-USERNAME" index.html about.html sitemap.xml; then
+          if grep -q "YOUR-GITHUB-USERNAME" index.html about.html site.config.json; then
             echo "::warning::Site URLs are placeholders. Run scripts/configure_site.py with --site-url and --repo-url."
           fi
 
@@ -48,12 +50,17 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build brand pages, catalogue and sitemap
+        run: python scripts/build_pages.py
       # Publish only what the site serves, not scripts, tests or the history.
       - name: Assemble site
         run: |
           mkdir -p _site/data _site/source
-          cp index.html about.html sw.js sitemap.xml robots.txt .nojekyll _site/
-          cp -r assets _site/
+          cp index.html about.html catalogue.html sw.js sitemap.xml robots.txt .nojekyll _site/
+          cp -r assets p catalogue _site/
           cp data/site.json data/meta.json _site/data/
           cp source/pricelist.pdf _site/source/
       - uses: actions/configure-pages@v5

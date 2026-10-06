@@ -16,6 +16,7 @@ JSON, checks it, keeps every version, and deploys the site on push.
   `-raw` mode but has **not** been checked against this PDF; if you use it,
   run `--check` first and compare the result.
 - Node 18 or newer, only for the search tests
+- Pillow (`pip install pillow`), only for `scripts/fetch_media.py`
 
 ## Updating the data when a new price list comes out
 
@@ -44,7 +45,8 @@ JSON, checks it, keeps every version, and deploys the site on push.
    - saves a copy to `data/history/<effective>_<printed>.json`
    - archives the PDF as `source/archive/<effective>_<printed>.pdf`
    - copies it to `source/pricelist.pdf`, which the site links to
-   - rebuilds `data/site.json` and `data/meta.json`, which the site loads
+   - rebuilds `data/site.json` and `data/meta.json`, which the site loads,
+     and the brand pages, catalogue and sitemap (`scripts/build_pages.py`)
 
    If any check fails, nothing is written. Fix the cause, or use `--force`
    only after checking the reported rows against the PDF yourself.
@@ -107,6 +109,20 @@ the list (Baileys, Chivas and others) return nothing rather than a guess.
 
 ## Price history
 
+Brand pages show a price table across every list in `data/history/`. To add
+an older KSBC list (they are published on bevco.in) without replacing the
+current one:
+
+```bash
+python scripts/parse_pdf.py --history-only old-list.pdf
+```
+
+It runs the same checks, prints the diff against the current list, saves
+`data/history/<effective>_<printed>.json`, archives the PDF and rebuilds the
+pages. A normal run refuses to replace the current list with an older one.
+Older lists may use a slightly different header; if the parser stops on
+one, nothing is written.
+
 Each version in `data/history/` is:
 
 ```json
@@ -116,6 +132,34 @@ Each version in `data/history/` is:
 
 Product codes (`id`) are the join key across versions. Nothing reads the
 history yet; it is there so a price-history view can be built later.
+
+## Photos and descriptions
+
+`data/media_sources.json` is the hand-curated list: which Wikimedia Commons
+photo shows which list entry (`exact`), or only the brand (`family`), and
+which Wikipedia article describes which brands. After editing it:
+
+```bash
+python scripts/fetch_media.py
+```
+
+```bash
+python scripts/build_pages.py
+```
+
+`fetch_media.py` refuses non-free licences, records author, licence and
+source for the credit line, shrinks each photo to a ~25 KB JPEG in
+`assets/products/`, drops description sentences about alcohol strength, and
+checks every id and match string against the current list. Commit
+`data/media.json` and `assets/products/`. Look at a photo's label before
+adding it: a photo of a different variant is worse than no photo.
+
+## Brand pages and catalogue
+
+`scripts/build_pages.py` writes `p/<id>.html` for every brand, the
+`catalogue.html` overview, one `catalogue/<type>.html` per type, and
+`sitemap.xml`. They are generated, git-ignored, and rebuilt by CI on every
+deploy, so there are no 1,300-file diffs in the repo.
 
 ## First-time setup for GitHub Pages
 
@@ -155,6 +199,9 @@ on `localhost` or HTTPS.
 | `assets/style.css` | All styles; see `DESIGN.md` for the reasoning |
 | `assets/fonts/` | Barlow Semi Condensed Bold, self-hosted (SIL OFL) |
 | `sw.js` | Network-first offline fallback |
+| `scripts/build_pages.py` | Brand pages, catalogue, sitemap (generated, not committed) |
+| `scripts/fetch_media.py` | Licensed photos and Wikipedia text from `data/media_sources.json` |
+| `assets/products/` | Small copies of the licensed photos |
 | `scripts/parse_pdf.py` | PDF to `products.json`, checks, diff, history |
 | `scripts/build_site_data.py` | `products.json` to the compact `site.json` |
 | `scripts/configure_site.py` | Site and repo URLs, sitemap, robots.txt |

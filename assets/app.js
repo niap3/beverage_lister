@@ -32,6 +32,7 @@
   var data = null;          // { meta, suppliers, categories, brands }
   var brands = [];          // prepared brand objects
   var byId = {};            // brand id (lowest product code) -> brand
+  var photos = {};          // brand id -> thumbnail path (licensed photos only)
   var sizes = [];           // every bottle size in the list, ascending
   var state = blankState();
   var shown = PAGE;
@@ -81,6 +82,16 @@
     return '<label class="chip" for="' + id + '"><input type="radio" id="' + id +
       '" name="' + name + '" value="' + value + '"' + (checked ? ' checked' : '') +
       '><span>' + label + '</span></label>';
+  }
+
+  // Welcome block: type links with counts, from the data.
+  function buildIntro() {
+    var counts = {};
+    brands.forEach(function (b) { counts[b.cat] = (counts[b.cat] || 0) + 1; });
+    $('type-links').innerHTML = data.categories.map(function (c) {
+      return '<li><a href="?cat=' + c + '" data-cat="' + c + '">' + (CAT_LABEL[c] || c) +
+        ' <span class="n">' + rupees.format(counts[c] || 0) + '</span></a></li>';
+    }).join('');
   }
 
   function buildControls() {
@@ -190,7 +201,7 @@
     var on = state.cmp.indexOf(b.id) !== -1;
     var full = !on && state.cmp.length >= MAX_COMPARE;
     return '<button type="button" class="cmp-btn" data-cmp="' + esc(b.id) + '" aria-pressed="' + on + '"' +
-      (full ? ' aria-disabled="true"' : '') + '>Compare<span class="visually-hidden"> ' +
+      (full ? ' aria-disabled="true"' : '') + '><span class="plus" aria-hidden="true">+</span>Compare<span class="visually-hidden"> ' +
       esc(b.name) + '</span></button>';
   }
 
@@ -211,13 +222,15 @@
              : 'Show all ' + b.sizes.length + ' sizes (' + hidden + ' hidden by filters)') +
         '</button>';
     }
-    return '<article class="card"><h2>' + esc(b.name) + '</h2>' +
+    var thumb = photos[b.id] ? '<img class="thumb" src="' + esc(photos[b.id]) + '" alt="" width="44" height="56" loading="lazy">' : '';
+    return '<article class="card" data-cat="' + esc(b.cat) + '"><h2' + (thumb ? ' class="has-thumb"' : '') + '>' + thumb +
+      '<a class="card-link" href="p/' + esc(b.id) + '.html">' + esc(b.name) + '</a></h2>' +
       '<ul class="sizes" aria-label="Sizes and prices">' + cells + '</ul>' + toggle +
       '<div class="card-foot"><p class="meta"><span class="cat">' + (CAT_LABEL[b.cat] || b.cat) +
       '</span> · ' + esc(b.sup) + '</p>' + cmpButton(b) + '</div></article>';
   }
 
-  function plural(n, one, many) { return n + ' ' + (n === 1 ? one : many); }
+  function plural(n, one, many) { return rupees.format(n) + ' ' + (n === 1 ? one : many); }
 
   function render() {
     var out = compute();
@@ -231,13 +244,16 @@
       el.results.innerHTML = '';
       el.more.hidden = true;
       el.summary.textContent = 'No results';
+      document.documentElement.classList.add('has-query');
       renderEmpty(out);
       return;
     }
 
     var bottles = list.reduce(function (n, r) { return n + r.vis.length; }, 0);
-    el.summary.textContent = plural(list.length, 'brand', 'brands') + ', ' +
-      plural(bottles, 'bottle size', 'bottle sizes');
+    var bare = !state.q.trim() && !activeFilters();
+    document.documentElement.classList.toggle('has-query', !bare);
+    el.summary.textContent = (bare ? 'All ' : '') + plural(list.length, 'brand', 'brands') + ', ' +
+      plural(bottles, 'bottle size', 'bottle sizes') + (bare && !state.sort ? ', A to Z' : '');
 
     if (!out.exact) {
       el.notice.hidden = false;
@@ -334,7 +350,7 @@
 
     var head = '<tr><th scope="col" class="size-col"><span class="visually-hidden">Size</span></th>' +
       cols.map(function (b) {
-        return '<th scope="col">' + esc(b.name) + '<span class="cmp-cat">' + (CAT_LABEL[b.cat] || b.cat) +
+        return '<th scope="col"><a class="card-link" href="p/' + esc(b.id) + '.html">' + esc(b.name) + '</a><span class="cmp-cat">' + (CAT_LABEL[b.cat] || b.cat) +
           '</span><button type="button" class="link-button" data-uncmp="' + esc(b.id) +
           '">Remove<span class="visually-hidden"> ' + esc(b.name) + '</span></button></th>';
       }).join('') + '</tr>';
@@ -452,6 +468,18 @@
       if (cards[first]) { cards[first].setAttribute('tabindex', '-1'); cards[first].focus(); }
     });
 
+    // Welcome-block links change the view in place instead of reloading.
+    $('intro').addEventListener('click', function (e) {
+      var a = e.target.closest('a');
+      if (!a) return;
+      e.preventDefault();
+      if (a.hasAttribute('data-q')) { state.q = a.getAttribute('data-q'); }
+      else if (a.hasAttribute('data-cat')) { state.cat = a.getAttribute('data-cat'); }
+      syncControls();
+      update(true);
+      el.summary.focus();
+    });
+
     el.trayOpen.addEventListener('click', openCompare);
     el.trayClear.addEventListener('click', function () {
       state.cmp = []; trayNote = '';
@@ -494,6 +522,7 @@
       return b;
     });
     sizes = Object.keys(seen).map(Number).sort(function (a, b) { return a - b; });
+    photos = d.photos || {};
   }
 
   var bound = false;
@@ -505,6 +534,7 @@
         prepare(d);
         window.fillMeta(d.meta);
         buildControls();
+        buildIntro();
         state = readUrl();
         syncControls();
         if (activeFilters()) el.filters.open = true;

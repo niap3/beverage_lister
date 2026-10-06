@@ -16,7 +16,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
+import build_pages  # noqa: E402
 import build_site_data  # noqa: E402
+import fetch_media  # noqa: E402
 import parse_pdf  # noqa: E402
 
 SPOT = json.loads((ROOT / "tests" / "spot_checks.json").read_text(encoding="utf-8"))
@@ -78,7 +80,8 @@ class DataInvariants(unittest.TestCase):
 
     def test_site_json_is_up_to_date(self):
         """site.json must be rebuilt after products.json changes."""
-        expected = build_site_data.build(self.products, load("products.meta.json"))
+        media = load("media.json") if (ROOT / "data" / "media.json").exists() else None
+        expected = build_site_data.build(self.products, load("products.meta.json"), media)
         self.assertEqual(load("site.json"), expected,
                          "data/site.json is stale: run python scripts/build_site_data.py")
 
@@ -151,6 +154,67 @@ class ParsePdf(unittest.TestCase):
             with self.subTest(item=" ".join(c["words"]), ml=c["ml"]):
                 hits = find(self.products, c["words"], c["ml"])
                 self.assertEqual([h["shop_price"] for h in hits], [c["price"]])
+
+
+class BrandPages(unittest.TestCase):
+    """The generated brand pages, built in memory."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.products = load("products.json")
+        cls.meta = load("products.meta.json")
+        cls.cfg = json.loads((ROOT / "site.config.json").read_text(encoding="utf-8"))
+        cls.media = load("media.json") if (ROOT / "data" / "media.json").exists() else {}
+        cls.brands = {b["id"]: b for b in build_pages.brands_from(cls.products)}
+        cls.hist = build_pages.history_index()
+
+    def render(self, b):
+        return build_pages.brand_page(b, self.meta, self.cfg, *self.hist, self.media,
+                                      build_pages.footer(self.meta))
+
+    def test_every_brand_gets_a_page_id(self):
+        self.assertEqual(len(self.brands), len({p["brand"] for p in self.products}))
+
+    def test_spot_check_prices_on_brand_pages(self):
+        for c in SPOT.get(self.meta["version"], []):
+            with self.subTest(item=" ".join(c["words"])):
+                b = next(b for b in self.brands.values() if all(w in b["name"] for w in c["words"]))
+                page = self.render(b)
+                self.assertIn(f'<span class="ml">{c["ml"]} ml</span>'
+                              f'<span class="price-tag">{build_pages.money(c["price"])}</span>', page)
+
+    def test_photos_are_free_and_credited(self):
+        for bid, p in self.media.get("photos", {}).items():
+            with self.subTest(id=bid):
+                self.assertIn(bid, self.brands, "photo for a brand id not in the current list")
+                self.assertRegex(p["license"], fetch_media.FREE)
+                for k in ("artist", "license_url", "source_url", "alt"):
+                    self.assertTrue(p[k], k)
+                self.assertTrue((ROOT / p["path"]).exists(), p["path"])
+                page = self.render(self.brands[bid])
+                self.assertIn(p["source_url"].replace("&", "&amp;"), page)
+
+    def test_descriptions_never_state_alcohol_strength(self):
+        for d in self.media.get("descriptions", []):
+            with self.subTest(label=d["label"]):
+                self.assertIsNone(fetch_media.STRENGTH.search(d["extract"]), d["extract"])
+
+    def test_history_table_with_two_lists(self):
+        """Synthetic data, in memory only: one older list with a lower price."""
+        b = next(iter(self.brands.values()))
+        p = b["sizes"][0]
+        old = {"version": "2025-01-27_2025-09-01", "effective": "2025-01-27", "printed": "2025-09-01"}
+        new = {"version": self.meta["version"], "effective": self.meta["effective"], "printed": self.meta["printed"]}
+        by_code = {p["id"]: [(old, p["shop_price"] - 10), (new, p["shop_price"])]}
+        html_out = build_pages.history_section(b, [old, new], by_code, {})
+        self.assertIn("27 January 2025", html_out)
+        self.assertIn(build_pages.money(p["shop_price"] - 10), html_out)
+        self.assertIn(build_pages.money(p["shop_price"]), html_out)
+
+    def test_indian_number_format(self):
+        self.assertEqual(build_pages.inr(15300), "15,300")
+        self.assertEqual(build_pages.inr(125000), "1,25,000")
+        self.assertEqual(build_pages.inr(980), "980")
 
 
 if __name__ == "__main__":

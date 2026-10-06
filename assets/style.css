@@ -10,6 +10,10 @@
   --leaf: #1F4D3A;
   --on-leaf: #F6F1E7;
   --rule: #D9CFBD;
+  --gold: #B8902A;           /* kasavu border gold; decorative only, never text */
+  --mast-bg: #1F4D3A;
+  --mast-fg: #F6F1E7;
+  --shadow: 0 1px 2px rgba(60, 40, 20, 0.06), 0 6px 18px rgba(60, 40, 20, 0.06);
   --price-font: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
   color-scheme: light dark;
 }
@@ -25,6 +29,10 @@
     --leaf: #86C3A3;
     --on-leaf: #14120F;
     --rule: #3A342C;
+    --gold: #C9A43A;
+    --mast-bg: #183D2E;        /* deep green in dark mode too; pastel lost the kasavu stripe */
+    --mast-fg: #F3EEE4;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -610,6 +618,111 @@ body.has-tray { padding-bottom: 72px; }
 }
 .cmp-table tr.overall th, .cmp-table tr.overall td { border-top: 2px solid var(--ink); }
 
+/* ---------- Site nav (several links) ---------- */
+
+.site-nav { display: flex; gap: 0 12px; flex-wrap: nowrap; }
+.masthead .site-nav a { font-size: 0.9375rem; padding: 0; }
+@media (max-width: 420px) {
+  .site-name { font-size: 1.1875rem; }
+  .masthead-row { gap: 8px; }
+}
+.masthead nav a[aria-current="page"] { text-decoration-thickness: 3px; }
+
+/* ---------- Brand pages ---------- */
+
+.page { padding-top: 8px; }
+.crumbs { margin: 12px 0 0; font-size: 0.875rem; color: var(--muted); }
+.crumbs a { display: inline-block; min-height: 24px; }
+.product h1 {
+  margin: 6px 0 2px;
+  font: 700 1.625rem/1.15 var(--price-font);
+  overflow-wrap: anywhere;
+}
+.product h2 { margin: 24px 0 8px; font: 700 1.25rem/1.2 var(--price-font); }
+.product-main { display: grid; gap: 12px; margin-top: 12px; }
+.product-photo { margin: 0; }
+.product-photo img {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  max-height: 260px;
+  object-fit: contain;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+.product-photo figcaption { margin-top: 4px; font-size: 0.75rem; color: var(--muted); }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 16px 0 0; }
+.actions > a:not(.button-link) { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+.facts { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 0; }
+.facts dt { font-weight: 600; color: var(--muted); }
+.facts dd { margin: 0; overflow-wrap: anywhere; }
+.codes { margin: 0; padding: 0; list-style: none; }
+.codes code { font-size: 0.9375rem; }
+.history { max-width: 640px; }
+.history td { font-variant-numeric: tabular-nums; }
+.about-brand p:first-of-type { max-width: 70ch; }
+.card-link { color: inherit; text-decoration: none; }
+.card h2.has-thumb { display: flex; align-items: center; gap: 10px; }
+.thumb {
+  flex: none;
+  width: 44px; height: 56px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+.card-link:hover, .card-link:focus-visible { text-decoration: underline; }
+
+@media (min-width: 700px) {
+  .product-main { grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+  .product-photo img { width: 280px; max-height: 320px; }
+}
+
+/* ---------- Catalogue ---------- */
+
+.cat-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.cat-tiles a {
+  display: block;
+  min-height: 44px;
+  padding: 12px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--ink);
+  text-decoration: none;
+}
+.cat-name { display: block; font: 700 1.375rem/1.1 var(--price-font); }
+.cat-count { display: block; margin-top: 4px; font-size: 0.875rem; color: var(--muted); }
+.jump { display: flex; flex-wrap: wrap; gap: 4px; margin: 12px 0; }
+.jump a {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 36px; min-height: 36px;
+  border: 1px solid var(--rule); border-radius: 4px;
+  background: var(--card); text-decoration: none; font-weight: 600;
+}
+.page h1 { margin: 12px 0 8px; font: 700 1.75rem/1.15 var(--price-font); }
+.page > h2 { margin: 20px 0 6px; font: 700 1.25rem/1.2 var(--price-font); scroll-margin-top: 8px; }
+.brand-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); }
+.brand-list li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.brand-list a { grid-column: 1 / -1; font-weight: 600; overflow-wrap: anywhere; }
+.brand-sizes { font-size: 0.8125rem; color: var(--muted); }
+.brand-from { font: 700 1.125rem/1.2 var(--price-font); text-align: right; }
+
 /* ---------- About page ---------- */
 
 .prose { max-width: 70ch; padding-top: 8px; }
@@ -629,6 +742,119 @@ body.has-tray { padding-bottom: 72px; }
   text-decoration: none;
 }
 .small { font-size: 0.875rem; color: var(--muted); }
+
+/* ---------- Visual refresh ---------- */
+
+/* Type accents: a stripe and a dot only, never behind text, so they carry no
+ * contrast burden. The type is always also written out. */
+[data-cat="whisky"]  { --accent: #B7791F; }
+[data-cat="brandy"]  { --accent: #8A3B1E; }
+[data-cat="rum"]     { --accent: #6B4226; }
+[data-cat="vodka"]   { --accent: #3B6E8F; }
+[data-cat="gin"]     { --accent: #2F7D6D; }
+[data-cat="beer"]    { --accent: #C99A2E; }
+[data-cat="wine"]    { --accent: #7B2D4F; }
+[data-cat="liqueur"] { --accent: #5E3A87; }
+[data-cat="tequila"] { --accent: #5C7A29; }
+[data-cat="other"]   { --accent: #8C8577; }
+
+/* Kasavu: the gold double stripe of a Kerala sari border. */
+.masthead { position: relative; padding-bottom: 18px; background: var(--mast-bg); color: var(--mast-fg); }
+.masthead .site-nav a, .masthead a { color: var(--mast-fg); }
+.masthead :focus-visible { outline-color: var(--mast-fg); }
+@media (prefers-color-scheme: dark) {
+  .card, .cat-tiles a, .product-prices { border-top-color: color-mix(in srgb, var(--accent, var(--rule)) 65%, white); }
+  .type-links a::before, .dot::before, .meta .cat::before { background: color-mix(in srgb, var(--accent, var(--muted)) 65%, white); }
+}
+.masthead::after, .footer::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 8px;
+  background: linear-gradient(var(--gold) 0 3px, transparent 3px 5px, var(--gold) 5px 8px);
+}
+.masthead::after { bottom: 0; }
+.footer { position: relative; border-top: 0; }
+.footer::before { top: 0; }
+
+.site-name, .site-name a { display: flex; align-items: center; gap: 8px; }
+.logo-mark {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--laterite);
+  color: var(--on-accent);
+  font: 700 1.125rem/1 var(--price-font);
+}
+.age { opacity: 0.92; }
+
+/* Search with a magnifier. */
+.search svg {
+  position: absolute;
+  left: 14px; top: 50%;
+  width: 20px; height: 20px;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+.search input { padding-left: 44px; height: 52px; border-radius: 10px; box-shadow: var(--shadow); }
+.clear { top: 4px; }
+
+/* Results never collapse to nothing while loading, so the footer cannot
+ * start on screen and then jump (that was the home page's layout shift). */
+.results-main { min-height: 100vh; }
+
+/* Welcome block on the bare home page. Hidden before first paint when the
+ * URL already carries a search or filter (see the inline script in <head>). */
+.intro {
+  margin: 16px 0 8px;
+  padding: 18px 16px 16px;
+  border-radius: 10px;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  box-shadow: var(--shadow);
+}
+html.has-query .intro { display: none; }
+.intro h2 { margin: 0 0 4px; font: 700 1.625rem/1.15 var(--price-font); }
+.intro p { margin: 0 0 12px; color: var(--muted); }
+.intro .intro-label { margin: 0 0 6px; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.type-links { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; padding: 0; list-style: none; }
+.type-links a {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 40px; padding: 0 12px;
+  border: 1px solid var(--rule); border-radius: 999px;
+  background: var(--paper); color: var(--ink);
+  text-decoration: none; font-weight: 600; font-size: 0.9375rem;
+}
+.type-links a::before, .dot::before {
+  content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--accent, var(--muted));
+}
+.type-links .n { color: var(--muted); font-weight: 400; }
+.try { font-size: 0.9375rem; }
+.try a { font-weight: 600; }
+.list-heading { margin: 18px 0 0; font: 700 1.125rem/1.2 var(--price-font); }
+
+/* Cards: soft edge, rounder, a type stripe on top. */
+.card { border-radius: 10px; box-shadow: var(--shadow); border-top: 4px solid var(--accent, var(--rule)); }
+.card h2 { font-size: 0.96875rem; letter-spacing: 0.015em; }
+.sizes li { padding: 10px 12px 12px 14px; }
+.per-litre { font-size: 0.78125rem; }
+.meta .cat { display: inline-flex; align-items: center; gap: 5px; }
+.meta .cat::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent, var(--muted)); }
+
+.cmp-btn { display: inline-flex; align-items: center; gap: 4px; }
+.cmp-btn .plus { font-size: 1.125rem; line-height: 1; }
+.cmp-btn[aria-pressed="true"] .plus { display: none; }
+.cmp-btn[aria-pressed="true"]::before { content: "✓"; }
+
+/* Brand page and catalogue pick up the same accents. */
+.product-prices { border-top: 4px solid var(--accent, var(--rule)); border-radius: 10px; box-shadow: var(--shadow); }
+.product-photo img { border-radius: 10px; box-shadow: var(--shadow); }
+.cat-tiles a { border-top: 4px solid var(--accent, var(--rule)); border-radius: 10px; box-shadow: var(--shadow); }
+.cat-tiles .cat-count { font-size: 0.875rem; }
+.cat-tiles .cat-big { display: block; margin-top: 8px; font: 700 1.5rem/1 var(--price-font); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

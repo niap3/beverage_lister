@@ -22,6 +22,8 @@
 <link rel="preload" href="assets/fonts/barlow-semi-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="data/site.json" as="fetch" crossorigin>
 <link rel="stylesheet" href="assets/style.css">
+<script>/* Before first paint: hide the welcome block on search/filter links, so it never appears and then jumps away. */
+if (/[?&](q|cat|size|min|max|sup|cmp)=/.test(location.search)) document.documentElement.className += " has-query";</script>
 </head>
 <body>
 
@@ -29,8 +31,8 @@
 
 <header class="masthead">
   <div class="wrap masthead-row">
-    <h1 class="site-name">Kerala liquor prices</h1>
-    <nav aria-label="Site"><a href="about.html">About</a></nav>
+    <h1 class="site-name"><span class="logo-mark" aria-hidden="true">₹</span>Kerala liquor prices</h1>
+    <nav aria-label="Site" class="site-nav"><a href="catalogue.html">Catalogue</a> <a href="about.html">About</a></nav>
   </div>
   <div class="wrap">
     <p class="age">For adults only. The legal drinking age in Kerala is 23.</p>
@@ -41,6 +43,7 @@
   <div class="wrap">
     <form class="search" role="search" id="search-form">
       <label for="q" class="visually-hidden">Search by brand name</label>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
       <input id="q" name="q" type="search" placeholder="Search a brand, like Royal Stag"
              autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"
              enterkeyhint="search">
@@ -85,8 +88,15 @@
   </div>
 </div>
 
-<main class="wrap" id="main" tabindex="-1">
-  <p id="summary" class="summary" role="status" aria-live="polite">Loading prices…</p>
+<main class="wrap results-main" id="main" tabindex="-1">
+  <section class="intro" id="intro" aria-labelledby="intro-title">
+    <h2 id="intro-title">What does it cost at Bevco?</h2>
+    <p>Look up any of <span data-meta="brands">1,327</span> brands. Every bottle size side by side, with the price per litre so you can tell which size is better value.</p>
+    <p class="intro-label">Browse by type</p>
+    <ul class="type-links" id="type-links"></ul>
+    <p class="try">Try: <a href="?q=old%20monk" data-q="old monk">Old Monk</a> · <a href="?q=mcdowells%20no.1" data-q="mcdowells no.1">McDowell's No.1</a> · <a href="?q=honey%20bee" data-q="honey bee">Honey Bee</a> · <a href="?q=kingfisher" data-q="kingfisher">Kingfisher</a></p>
+  </section>
+  <p id="summary" class="summary" role="status" aria-live="polite" tabindex="-1">Loading prices…</p>
   <p id="notice" class="notice" hidden></p>
   <div id="results" class="results"></div>
   <div id="empty" class="empty" hidden></div>
