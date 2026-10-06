@@ -15,25 +15,7 @@
   --mast-fg: #F6F1E7;
   --shadow: 0 1px 2px rgba(60, 40, 20, 0.06), 0 6px 18px rgba(60, 40, 20, 0.06);
   --price-font: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
-  color-scheme: light dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #14120F;
-    --card: #1E1B17;
-    --ink: #F3EEE4;
-    --muted: #B5AC9C;
-    --laterite: #E8956F;
-    --on-accent: #14120F;
-    --leaf: #86C3A3;
-    --on-leaf: #14120F;
-    --rule: #3A342C;
-    --gold: #C9A43A;
-    --mast-bg: #183D2E;        /* deep green in dark mode too; pastel lost the kasavu stripe */
-    --mast-fg: #F3EEE4;
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  }
+  color-scheme: light;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -798,10 +780,6 @@ body.has-tray { padding-bottom: 72px; }
 .masthead { position: relative; padding-bottom: 18px; background: var(--mast-bg); color: var(--mast-fg); }
 .masthead .site-nav a, .masthead a { color: var(--mast-fg); }
 .masthead :focus-visible { outline-color: var(--mast-fg); }
-@media (prefers-color-scheme: dark) {
-  .card, .cat-tiles a, .product-prices { border-top-color: color-mix(in srgb, var(--accent, var(--rule)) 65%, white); }
-  .type-links a::before, .dot::before, .meta .cat::before { background: color-mix(in srgb, var(--accent, var(--muted)) 65%, white); }
-}
 .masthead::after, .footer::before {
   content: "";
   position: absolute;
@@ -898,7 +876,7 @@ html.has-query .intro { display: none; }
  * Loud sticker-book look for young adults: thick ink outlines, hard offset
  * shadows, a juicy colour block per drink type, chunky display type.
  * Every text/background pair below was checked: ink on any type tint is
- * 8.8:1 or better, links 5.6:1+, muted text 8:1+ (light and dark).
+ * 8.8:1 or better, links 5.6:1+, muted text 8:1+. Light mode only.
  * Still no drink imagery; the age notice stays in the header.
  * ===================================================================== */
 
@@ -930,26 +908,6 @@ html.has-query .intro { display: none; }
   --mast-fg: #141414;
   --gold: #141414;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #121212;
-    --card: #1E1E1E;
-    --ink: #F7F3EA;
-    --muted: #BDB6A8;
-    --laterite: #FFB38F;
-    --on-accent: #141414;
-    --leaf: #FFC93C;
-    --on-leaf: #141414;
-    --rule: #3A3631;
-    --line: #F7F3EA;
-    --pop: 4px 4px 0 #FFC93C;
-    --pop-sm: 3px 3px 0 #FFC93C;
-    --mast-bg: #FFC93C;
-    --mast-fg: #141414;
-    --gold: #141414;
-  }
-}
-
 /* Type colours: a tint behind the brand name (always dark text on it). */
 [data-cat="whisky"]  { --tint: #FFC93C; --accent: #FFC93C; }
 [data-cat="brandy"]  { --tint: #FF9A66; --accent: #FF9A66; }

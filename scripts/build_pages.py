@@ -133,6 +133,7 @@ def page(*, title, description, canonical, og_image, root, body, site_name, foot
 <meta property="og:locale" content="en_IN">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FFC93C">
+<meta name="color-scheme" content="light">
 <link rel="icon" href="{FAVICON}">
 <link rel="preload" href="{root}assets/fonts/barlow-semi-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{root}assets/fonts/bricolage-grotesque-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
