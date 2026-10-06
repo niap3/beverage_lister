@@ -15,8 +15,8 @@
     whisky: 'Whisky', brandy: 'Brandy', rum: 'Rum', vodka: 'Vodka', gin: 'Gin',
     beer: 'Beer', wine: 'Wine', liqueur: 'Liqueur', tequila: 'Tequila', other: 'Other'
   };
-  var SORTS = { '': 1, 'price-asc': 1, 'price-desc': 1, litre: 1, az: 1, popular: 1 };
-  var POPULAR_BADGE = 20;   // "Often looked up" badge for the top N brands
+  var SORTS = { '': 1, 'price-asc': 1, 'price-desc': 1, litre: 1, az: 1, trending: 1 };
+  var TRENDING_BADGE = 3;   // "#1 trending in Whisky" badge for the top N of each type
 
   var $ = function (id) { return document.getElementById(id); };
   var el = {
@@ -34,8 +34,8 @@
   var brands = [];          // prepared brand objects
   var byId = {};            // brand id (lowest product code) -> brand
   var photos = {};          // brand id -> thumbnail path (licensed photos only)
-  var popularity = null;    // { window_days, brands: { id: { score } } } or null when not configured
-  var topIds = {};          // brand ids that get the "Often looked up" badge
+  var trendPos = null;      // brand id -> position in the trending order (0 = top); null when not set up
+  var catRank = {};         // brand id -> rank within its own type, for the badge
   var sizes = [];           // every bottle size in the list, ascending
   var state = blankState();
   var shown = PAGE;
@@ -187,7 +187,7 @@
       'price-asc': function (a, b) { return minOf(a, 'price') - minOf(b, 'price') || byName(a, b); },
       'price-desc': function (a, b) { return maxOf(b, 'price') - maxOf(a, 'price') || byName(a, b); },
       litre: function (a, b) { return minOf(a, 'ppl') - minOf(b, 'ppl') || byName(a, b); },
-      popular: function (a, b) { return score(b.b) - score(a.b) || byName(a, b); },
+      trending: function (a, b) { return trendOf(a.b) - trendOf(b.b) || byName(a, b); },
       az: byName
     }[state.sort];
     list.sort(cmp);
@@ -205,9 +205,9 @@
 
   function money(n) { return '₹' + rupees.format(n); }
 
-  function score(b) {
-    var p = popularity && popularity.brands[b.id];
-    return p ? p.score : 0;
+  // Brands not in the ranking sort after every ranked one.
+  function trendOf(b) {
+    return trendPos && b.id in trendPos ? trendPos[b.id] : Infinity;
   }
 
   function cmpButton(b) {
@@ -236,7 +236,8 @@
         '</button>';
     }
     var thumb = photos[b.id] ? '<img class="thumb" src="' + esc(photos[b.id]) + '" alt="" width="44" height="56" loading="lazy">' : '';
-    var badge = topIds[b.id] ? '<p class="badge">Often looked up</p>' : '';
+    var badge = catRank[b.id] ? '<p class="badge">#' + catRank[b.id] + ' trending in ' +
+      (CAT_LABEL[b.cat] || b.cat) + '</p>' : '';
     return '<article class="card" data-cat="' + esc(b.cat) + '"><h2' + (thumb ? ' class="has-thumb"' : '') + '>' + thumb +
       '<a class="card-link" href="p/' + esc(b.id) + '.html">' + esc(b.name) + '</a></h2>' + badge +
       '<ul class="sizes" aria-label="Sizes and prices">' + cells + '</ul>' + toggle +
@@ -269,7 +270,7 @@
     el.summary.textContent = (bare ? 'All ' : '') + plural(list.length, 'brand', 'brands') + ', ' +
       plural(bottles, 'bottle size', 'bottle sizes') + (bare && !state.sort ? ', A to Z' : '') +
       (state.sort === 'litre' ? ', best value (lowest price per litre) first' : '') +
-      (state.sort === 'popular' && popularity ? ', most looked up on this site in the last ' + popularity.window_days + ' days first' : '');
+      (state.sort === 'trending' && trendPos ? ', trending this week first' : '');
 
     if (!out.exact) {
       el.notice.hidden = false;
@@ -572,7 +573,6 @@
         buildIntro();
         state = readUrl();
         syncControls();
-        if (activeFilters()) el.filters.open = true;
         if (!bound) { bind(); bound = true; }
         render();
         renderTray();
@@ -585,32 +585,37 @@
       });
   }
 
-  // Optional: only exists once GoatCounter is set up. Adds the sort option
-  // and badges, and re-renders; a missing file changes nothing.
+  // Optional: only exists once GoatCounter has data. It is an ORDER of brand
+  // ids (no counts). Adds the sort option and badges and re-renders; a
+  // missing file changes nothing.
   function loadPopularity() {
     fetch('data/popularity.json')
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (p) {
-        if (!p || !p.brands || !Object.keys(p.brands).length) { dropPopularSort(); return; }
-        popularity = p;
-        Object.keys(p.brands)
-          .sort(function (a, b) { return p.brands[b].score - p.brands[a].score; })
-          .slice(0, POPULAR_BADGE)
-          .forEach(function (id) { topIds[id] = true; });
+        var ranked = (p && p.ranked || []).filter(function (id) { return byId[id]; });
+        if (!ranked.length) { dropPopularSort(); return; }
+        trendPos = {};
+        var perCat = {};
+        ranked.forEach(function (id, i) {
+          trendPos[id] = i;
+          var c = byId[id].cat;
+          perCat[c] = (perCat[c] || 0) + 1;
+          if (perCat[c] <= TRENDING_BADGE) catRank[id] = perCat[c];
+        });
         var o = document.createElement('option');
-        o.value = 'popular';
-        o.textContent = 'Most looked up';
-        el.sort.appendChild(o);
+        o.value = 'trending';
+        o.textContent = 'Trending this week';
+        el.sort.insertBefore(o, el.sort.options[1]);
         el.sort.value = state.sort;
         render();
       })
       .catch(dropPopularSort);
   }
 
-  // A shared ?sort=popular link on a site without popularity data falls back
+  // A shared ?sort=trending link on a site without ranking data falls back
   // to the default order instead of a blank sort menu.
   function dropPopularSort() {
-    if (state.sort !== 'popular') return;
+    if (state.sort !== 'trending') return;
     state.sort = '';
     el.sort.value = '';
     writeUrl();

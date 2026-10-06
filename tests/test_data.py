@@ -232,6 +232,12 @@ class Popularity(unittest.TestCase):
         self.assertEqual(fetch_popularity.tally(rows, {"12702731X"}),
                          {"12702731X": {"views": 10, "compares": 2}})
 
+    def test_rank_orders_by_week_then_month_and_drops_noise(self):
+        c = lambda v: {"views": v, "compares": 0}
+        week = {"A": c(5), "B": c(5), "C": c(1)}
+        month = {"A": c(6), "B": c(20), "C": c(9), "D": c(2)}   # D below the noise floor
+        self.assertEqual(fetch_popularity.rank(week, month), ["B", "A", "C"])
+
     def test_no_token_writes_nothing(self):
         import os, tempfile
         out = Path(tempfile.mkdtemp()) / "p.json"
