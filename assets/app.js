@@ -221,10 +221,15 @@
   function card(r) {
     var b = r.b;
     var all = expanded[b.i];
-    var cells = (all ? b.sizes : r.vis).map(function (s) {
-      return '<li><span class="ml">' + s.ml + ' ml</span>' +
+    var shownSizes = all ? b.sizes : r.vis;
+    // With 2+ sizes on show, the lowest price per litre gets a sticker.
+    var best = shownSizes.length > 1 ? Math.min.apply(null, shownSizes.map(function (s) { return s.ppl; })) : null;
+    var cells = shownSizes.map(function (s) {
+      var isBest = s.ppl === best;
+      return '<li' + (isBest ? ' class="best"' : '') + '><span class="ml">' + s.ml + ' ml</span>' +
         '<span class="price-tag">' + money(s.price) + '</span>' +
-        '<span class="per-litre">' + money(s.ppl) + ' per litre</span></li>';
+        '<span class="per-litre">' + money(s.ppl) + ' per litre</span>' +
+        (isBest ? '<span class="sticker">Best value</span>' : '') + '</li>';
     }).join('');
     var hidden = b.sizes.length - r.vis.length;
     var toggle = '';
@@ -287,7 +292,7 @@
     var q = esc(state.q.trim());
     var html;
     if (out.hasText && out.nameMatches === 0) {
-      html = '<h2>“' + q + '” is not in this price list</h2>' +
+      html = '<h2>Aiyyo! “' + q + '” is not in this price list</h2>' +
         '<p>It is not among the brands in the Bevco price list from ' +
         esc(window.formatMetaDate(data.meta.effective)) + ', so this site has no price for it. ' +
         'Ask at the shop whether they have it and what it costs.</p>' +
@@ -300,7 +305,7 @@
       html = '<h2>No ' + out.querySize + ' ml bottles match these filters</h2>' +
         '<p><button type="button" class="link-button" data-reset>Clear filters</button></p>';
     } else {
-      html = '<h2>No bottles match these filters</h2>' +
+      html = '<h2>Too picky! No bottles match these filters</h2>' +
         '<p>Try a wider price range or a different size.</p>' +
         '<p><button type="button" class="link-button" data-reset>Clear filters</button></p>';
     }
@@ -621,6 +626,18 @@
     writeUrl();
     render();
   }
+
+  // Rotating search suggestions in the placeholder. Stops while the box is
+  // focused or has text; a placeholder change is not motion.
+  (function rotatePlaceholder() {
+    var names = ['Old Monk', 'Royal Stag', "McDowell's No.1", 'Kingfisher', 'Honey Bee', 'Magic Moments', 'Bacardi'];
+    var i = 0;
+    setInterval(function () {
+      if (document.activeElement === el.q || el.q.value) return;
+      i = (i + 1) % names.length;
+      el.q.placeholder = 'Try “' + names[i] + '”';
+    }, 2600);
+  })();
 
   load();
 

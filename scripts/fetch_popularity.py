@@ -13,8 +13,9 @@ Brands with fewer than MIN_30D look-ups in 30 days are left out as noise.
 
 Needs "goatcounter" (the site code) in site.config.json and an API token
 that can read statistics in GOATCOUNTER_TOKEN. Without either, or if the
-API fails, it writes nothing and exits 0: a stats problem never blocks a
-price update, and the site simply shows no trending sort.
+API fails, it writes an EMPTY ranking and exits 0: a stats problem never
+blocks a price update, the site shows no trending sort, and the page's
+request for the file still succeeds (no 404 in the console).
 """
 
 import json
@@ -78,28 +79,34 @@ def fetch_hits(code, token, days):
             return rows
 
 
+def write(out, ranked):
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps({"updated": datetime.now(timezone.utc).date().isoformat(),
+                               "window_days": 7, "ranked": ranked}, separators=(",", ":")),
+                   encoding="utf-8")
+
+
 def main():
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "data" / "popularity.json"
     cfg = json.loads((ROOT / "site.config.json").read_text(encoding="utf-8"))
     code, token = cfg.get("goatcounter"), os.environ.get("GOATCOUNTER_TOKEN")
     if not code or not token:
-        print("Trending: no GoatCounter code or token configured; skipping.")
+        print("Trending: no GoatCounter code or token configured; empty ranking.")
+        write(out, [])
         return 0
     known = {p["id"] for p in json.loads((ROOT / "data" / "products.json").read_text(encoding="utf-8"))}
     try:
         week = tally(fetch_hits(code, token, 7), known)
         month = tally(fetch_hits(code, token, 30), known)
     except Exception as e:  # a stats outage must never block a price deploy
-        print(f"Trending: GoatCounter request failed ({e}); skipping.")
+        print(f"Trending: GoatCounter request failed ({e}); empty ranking.")
+        write(out, [])
         return 0
     ranked = rank(week, month)
+    write(out, ranked)
     if not ranked:
-        print(f"Trending: no brand has {MIN_30D}+ look-ups in 30 days yet; skipping.")
+        print(f"Trending: no brand has {MIN_30D}+ look-ups in 30 days yet; empty ranking.")
         return 0
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"updated": datetime.now(timezone.utc).date().isoformat(),
-                               "window_days": 7, "ranked": ranked}, separators=(",", ":")),
-                   encoding="utf-8")
     print(f"Trending: ranked {len(ranked)} brands -> {out}")
     return 0
 

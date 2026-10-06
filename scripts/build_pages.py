@@ -132,9 +132,10 @@ def page(*, title, description, canonical, og_image, root, body, site_name, foot
 <meta property="og:image" content="{e(og_image)}">
 <meta property="og:locale" content="en_IN">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#1F4D3A">
+<meta name="theme-color" content="#FFC93C">
 <link rel="icon" href="{FAVICON}">
 <link rel="preload" href="{root}assets/fonts/barlow-semi-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{root}assets/fonts/bricolage-grotesque-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{root}assets/style.css">
 </head>
 <body>
@@ -169,11 +170,15 @@ def footer(meta):
 # ------------------------------------------------------------- brand pages
 
 def size_cells(sizes):
+    """Price cells; with 2+ sizes, the lowest price per litre gets a sticker."""
+    ppl = [p["shop_price"] * 1000 / p["volume_ml"] for p in sizes]
+    best = min(ppl) if len(sizes) > 1 else None
     return "".join(
-        f'<li><span class="ml">{p["volume_ml"]} ml</span>'
+        f'<li{" class=\"best\"" if v == best else ""}><span class="ml">{p["volume_ml"]} ml</span>'
         f'<span class="price-tag">{money(p["shop_price"])}</span>'
-        f'<span class="per-litre">{money(p["shop_price"] * 1000 / p["volume_ml"])} per litre</span></li>'
-        for p in sizes)
+        f'<span class="per-litre">{money(v)} per litre</span>'
+        f'{"<span class=\"sticker\">Best value</span>" if v == best else ""}</li>'
+        for p, v in zip(sizes, ppl))
 
 
 def history_section(b, versions, by_code, by_name):

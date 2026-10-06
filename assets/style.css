@@ -893,6 +893,340 @@ html.has-query .intro { display: none; }
 .cat-tiles .cat-count { font-size: 0.875rem; }
 .cat-tiles .cat-big { display: block; margin-top: 8px; font: 700 1.5rem/1 var(--price-font); }
 
+/* =====================================================================
+ * Theme: "Bevco Pop"
+ * Loud sticker-book look for young adults: thick ink outlines, hard offset
+ * shadows, a juicy colour block per drink type, chunky display type.
+ * Every text/background pair below was checked: ink on any type tint is
+ * 8.8:1 or better, links 5.6:1+, muted text 8:1+ (light and dark).
+ * Still no drink imagery; the age notice stays in the header.
+ * ===================================================================== */
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("fonts/bricolage-grotesque-latin-800-normal.woff2") format("woff2");
+}
+
+:root {
+  --paper: #FFF4DE;
+  --card: #FFFFFF;
+  --ink: #141414;
+  --muted: #4D4A44;
+  --laterite: #B3361A;          /* links */
+  --on-accent: #141414;
+  --leaf: #141414;              /* focus ring */
+  --on-leaf: #FFFFFF;
+  --rule: #E5DAC4;              /* inner hairlines */
+  --line: #141414;              /* outlines */
+  --mango: #FFC93C;
+  --orange: #FF5A1F;
+  --pop: 4px 4px 0 var(--line);
+  --pop-sm: 3px 3px 0 var(--line);
+  --display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --mast-bg: #FFC93C;
+  --mast-fg: #141414;
+  --gold: #141414;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #121212;
+    --card: #1E1E1E;
+    --ink: #F7F3EA;
+    --muted: #BDB6A8;
+    --laterite: #FFB38F;
+    --on-accent: #141414;
+    --leaf: #FFC93C;
+    --on-leaf: #141414;
+    --rule: #3A3631;
+    --line: #F7F3EA;
+    --pop: 4px 4px 0 #FFC93C;
+    --pop-sm: 3px 3px 0 #FFC93C;
+    --mast-bg: #FFC93C;
+    --mast-fg: #141414;
+    --gold: #141414;
+  }
+}
+
+/* Type colours: a tint behind the brand name (always dark text on it). */
+[data-cat="whisky"]  { --tint: #FFC93C; --accent: #FFC93C; }
+[data-cat="brandy"]  { --tint: #FF9A66; --accent: #FF9A66; }
+[data-cat="rum"]     { --tint: #EDB98A; --accent: #EDB98A; }
+[data-cat="vodka"]   { --tint: #7DD3FF; --accent: #7DD3FF; }
+[data-cat="gin"]     { --tint: #5FE0B9; --accent: #5FE0B9; }
+[data-cat="beer"]    { --tint: #FFE45C; --accent: #FFE45C; }
+[data-cat="wine"]    { --tint: #F4A8EA; --accent: #F4A8EA; }
+[data-cat="liqueur"] { --tint: #CDB8FF; --accent: #CDB8FF; }
+[data-cat="tequila"] { --tint: #BDEB8B; --accent: #BDEB8B; }
+[data-cat="other"]   { --tint: #E6E0D3; --accent: #E6E0D3; }
+
+body {
+  background-color: var(--paper);
+  background-image: radial-gradient(color-mix(in srgb, var(--ink) 9%, transparent) 1px, transparent 1.5px);
+  background-size: 18px 18px;
+}
+
+:focus-visible { outline: 3px solid var(--leaf); outline-offset: 3px; }
+
+/* ---- Header: a mango block with a zigzag hem ---- */
+.masthead { padding: 12px 0 24px; }
+.masthead::after {
+  height: 12px;
+  bottom: -1px;
+  background:
+    linear-gradient(135deg, var(--paper) 25%, transparent 25%) 0 0 / 16px 12px,
+    linear-gradient(225deg, var(--paper) 25%, transparent 25%) 0 0 / 16px 12px;
+}
+.site-name { font: 800 1.375rem/1 var(--display); letter-spacing: -0.01em; }
+.logo-mark {
+  width: 34px; height: 34px;
+  border: 2.5px solid #141414;
+  border-radius: 10px;
+  background: var(--orange);
+  color: #141414;
+  box-shadow: 2px 2px 0 #141414;
+  transform: rotate(-6deg);
+  font-size: 1.25rem;
+}
+.age {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 2px 10px;
+  border: 2px solid #141414;
+  border-radius: 999px;
+  background: #fff;
+  color: #141414;
+  font-size: 0.75rem;
+  font-weight: 700;
+  opacity: 1;
+}
+.masthead nav a { font-weight: 800; text-decoration-thickness: 2px; }
+.masthead :focus-visible { outline-color: #141414; }
+
+/* ---- Search ---- */
+.searchbar {
+  border-bottom: 0;
+  padding-top: 14px;
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  backdrop-filter: blur(6px);
+}
+.search input {
+  height: 56px;
+  border: 3px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--pop);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.search input:focus { outline: none; box-shadow: 6px 6px 0 var(--orange); }
+.search svg { color: var(--ink); width: 22px; height: 22px; }
+.asof time { background: var(--mango); color: #141414; padding: 0 4px; border-radius: 4px; }
+
+/* ---- Buttons, chips, selects ---- */
+.filters > summary, .sort select, .cmp-btn, .more, .quick, .chip span,
+.type-links a, .tray-open, .button-link {
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+}
+.filters > summary {
+  border: 2.5px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--pop-sm);
+  font-weight: 800;
+}
+.sort select, input[type="number"], .field select {
+  border: 2.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  font-weight: 600;
+}
+.sort select { box-shadow: var(--pop-sm); }
+.count { background: var(--orange); color: #141414; border: 2px solid #141414; font-weight: 800; }
+.panel { border: 3px solid var(--line); border-radius: 16px; box-shadow: var(--pop); }
+.chip span, .quick { border: 2px solid var(--line); background: var(--card); color: var(--ink); font-weight: 700; }
+.chip input:checked + span, .quick[aria-pressed="true"] {
+  background: var(--mango);
+  border-color: var(--line);
+  color: #141414;
+  box-shadow: var(--pop-sm);
+  transform: translate(-1px, -1px) rotate(-1.5deg);
+}
+.tray-open, .button-link {
+  border: 2.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--orange);
+  color: #141414;
+  font-weight: 800;
+  box-shadow: var(--pop-sm);
+}
+.tray-open:disabled { background: var(--rule); color: var(--muted); box-shadow: none; }
+.filters > summary:active, .cmp-btn:active, .more:active, .quick:active, .chip span:active,
+.type-links a:active, .tray-open:active, .button-link:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--line);
+}
+
+/* ---- Welcome block ---- */
+.intro {
+  position: relative;
+  border: 3px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 6px 6px 0 var(--line);
+  background: var(--card);
+  overflow: hidden;
+}
+.intro::after {   /* sunburst sticker, decorative */
+  content: "₹";
+  position: absolute; top: -14px; right: -14px;
+  display: grid; place-items: center;
+  width: 92px; height: 92px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(var(--mango) 0 15deg, var(--orange) 15deg 30deg);
+  color: #141414;
+  font: 800 2.25rem/1 var(--display);
+  border: 3px solid #141414;
+  transform: rotate(12deg);
+}
+.intro h2 { padding-right: 70px; font: 800 2.25rem/1.05 var(--display); letter-spacing: -0.02em; }
+.intro h2 [lang="ml"] { display: block; font-family: "Noto Sans Malayalam", "Nirmala UI", var(--display); font-weight: 800; }
+.intro h2 .intro-en { display: block; margin-top: 6px; font-size: 1.125rem; line-height: 1.2; color: var(--muted); letter-spacing: 0; }
+.intro p { color: var(--ink); }
+.intro .intro-label { color: var(--ink); letter-spacing: 0.08em; }
+.type-links a {
+  border: 2px solid var(--line);
+  background: var(--tint, var(--card));
+  color: #141414;
+  font-weight: 800;
+  box-shadow: var(--pop-sm);
+}
+.type-links a::before { display: none; }
+.type-links .n { color: #141414; opacity: 0.7; font-weight: 700; }
+.value-links a { background: var(--card); color: var(--ink); }
+.type-links a:hover { transform: translate(-1px, -2px) rotate(-1deg); }
+
+/* ---- Cards ---- */
+.results { gap: 18px; }
+.card {
+  border: 3px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--pop);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.card:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--line); }
+.card h2 {
+  background: var(--tint, var(--card));
+  border-bottom: 3px solid var(--line);
+  color: #141414;
+  font: 800 1.0625rem/1.2 var(--display);
+  letter-spacing: -0.005em;
+  padding: 12px 14px;
+}
+.card h2 .card-link { color: #141414; }
+.thumb { border: 2px solid #141414; border-radius: 8px; transform: rotate(-4deg); }
+.sizes { border-top: 0; }
+.sizes li { position: relative; border-color: var(--rule); }
+.sizes li.best { background: color-mix(in srgb, var(--mango) 22%, var(--card)); }
+.sticker {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 2px 7px;
+  border: 2px solid #141414;
+  border-radius: 999px;
+  background: var(--mango);
+  color: #141414;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  line-height: 1.3;
+  transform: rotate(5deg);
+  white-space: nowrap;
+}
+.badge {
+  margin: 10px 14px 4px;
+  padding: 3px 10px;
+  border: 2px solid #141414;
+  background: var(--orange);
+  color: #141414;
+  font-weight: 800;
+  transform: rotate(-2deg);
+  box-shadow: 2px 2px 0 #141414;
+}
+.card-foot { border-top: 2px dashed var(--rule); }
+.meta .cat::before { border: 1.5px solid var(--line); width: 10px; height: 10px; }
+.cmp-btn {
+  border: 2.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+  font-weight: 800;
+  box-shadow: var(--pop-sm);
+}
+.cmp-btn[aria-pressed="true"] { background: #5FE0B9; color: #141414; border-color: var(--line); }
+.more {
+  border: 3px solid var(--line);
+  border-radius: 14px;
+  background: var(--mango);
+  color: #141414;
+  font-weight: 800;
+  box-shadow: var(--pop);
+}
+
+/* ---- Notices, empty state ---- */
+.notice, .empty { border: 3px solid var(--line); border-radius: 16px; box-shadow: var(--pop); }
+.empty h2 { font: 800 1.5rem/1.15 var(--display); }
+
+/* ---- Tray and compare ---- */
+.tray { border-top: 3px solid #141414; background: var(--mango); }
+.tray-text { color: #141414; font-weight: 700; }
+.tray .link-button { color: #141414; }
+.compare { border: 3px solid var(--line); }
+.compare-head { background: var(--mango); color: #141414; border-bottom: 3px solid #141414; }
+.compare-head h2 { font-family: var(--display); }
+.compare-head .close { color: #141414; }
+.compare-head :focus-visible { outline-color: #141414; }
+.lowest { background: #5FE0B9; color: #141414; border: 2px solid #141414; }
+
+/* ---- Footer: zigzag top ---- */
+.footer { background: var(--card); border-top: 3px solid var(--line); }
+.footer::before {
+  top: -15px;
+  height: 12px;
+  background:
+    linear-gradient(45deg, var(--line) 25%, transparent 25%) 0 0 / 16px 12px,
+    linear-gradient(-45deg, var(--line) 25%, transparent 25%) 0 0 / 16px 12px;
+}
+
+/* ---- Brand pages and catalogue ---- */
+.page h1, .product h1, .prose h1 { font: 800 2rem/1.05 var(--display); letter-spacing: -0.02em; }
+.product h2, .page > h2, .prose h2 { font-family: var(--display); font-weight: 800; }
+.product-prices { border: 3px solid var(--line); border-radius: 18px; box-shadow: var(--pop); overflow: hidden; }
+.product-photo img { border: 3px solid var(--line); border-radius: 18px; box-shadow: var(--pop); transform: rotate(-1.5deg); }
+.cat-tiles a {
+  border: 3px solid var(--line);
+  border-radius: 18px;
+  background: var(--tint, var(--card));
+  color: #141414;
+  box-shadow: var(--pop);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.cat-tiles a:hover { transform: translate(-2px, -2px) rotate(-1deg); box-shadow: 6px 6px 0 var(--line); }
+.cat-name { font: 800 1.625rem/1 var(--display); }
+.cat-tiles .cat-count { color: #141414; opacity: 0.75; }
+.jump a { border: 2px solid var(--line); box-shadow: 2px 2px 0 var(--line); color: var(--ink); }
+.brand-list li { border-bottom: 2px dashed var(--rule); }
+
+@media (max-width: 420px) {
+  .site-name { font-size: 1.125rem; }
+  .logo-mark { width: 30px; height: 30px; font-size: 1.0625rem; }
+  .intro h2 { font-size: 2rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card:hover, .type-links a:hover, .cat-tiles a:hover,
+  .filters > summary:active, .cmp-btn:active, .more:active, .quick:active, .chip span:active,
+  .type-links a:active, .tray-open:active, .button-link:active { transform: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     transition: none !important;

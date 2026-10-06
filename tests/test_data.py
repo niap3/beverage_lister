@@ -238,7 +238,7 @@ class Popularity(unittest.TestCase):
         month = {"A": c(6), "B": c(20), "C": c(9), "D": c(2)}   # D below the noise floor
         self.assertEqual(fetch_popularity.rank(week, month), ["B", "A", "C"])
 
-    def test_no_token_writes_nothing(self):
+    def test_no_token_writes_an_empty_ranking(self):
         import os, tempfile
         out = Path(tempfile.mkdtemp()) / "p.json"
         old = os.environ.pop("GOATCOUNTER_TOKEN", None)
@@ -250,7 +250,7 @@ class Popularity(unittest.TestCase):
             sys.argv = argv
             if old is not None:
                 os.environ["GOATCOUNTER_TOKEN"] = old
-        self.assertFalse(out.exists())
+        self.assertEqual(json.loads(out.read_text(encoding="utf-8"))["ranked"], [])
 
 
 class FinalizeSite(unittest.TestCase):
