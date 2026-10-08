@@ -237,6 +237,7 @@ class Popularity(unittest.TestCase):
         week = {"A": c(5), "B": c(5), "C": c(1)}
         month = {"A": c(6), "B": c(20), "C": c(9), "D": c(2)}   # D below the noise floor
         self.assertEqual(fetch_popularity.rank(week, month), ["B", "A", "C"])
+        self.assertEqual(fetch_popularity.rank_month(month), ["B", "C", "A"])
 
     def test_no_token_writes_an_empty_ranking(self):
         import os, tempfile

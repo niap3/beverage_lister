@@ -508,7 +508,7 @@
 
     // Welcome-block links change the view in place instead of reloading.
     $('intro').addEventListener('click', function (e) {
-      var a = e.target.closest('a');
+      var a = e.target.closest('a[href^="?"]');   // tiles link to brand pages; leave those alone
       if (!a) return;
       e.preventDefault();
       // Apply every parameter in the link (q, cat, size, max, sort...).
@@ -518,6 +518,7 @@
       });
       syncControls();
       update(true);
+      window.scrollTo(0, 0);
       el.summary.focus();
     });
 
@@ -569,19 +570,28 @@
   var bound = false;
   function load() {
     el.summary.textContent = 'Loading prices…';
-    fetch('data/site.json')
-      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function (d) {
-        prepare(d);
-        window.fillMeta(d.meta);
+    // Prices and rankings arrive together, so the home rows render once and
+    // never jump when the ranking lands. The ranking is optional.
+    var ranking = fetch('data/popularity.json')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
+    Promise.all([fetch('data/site.json').then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    }), ranking])
+      .then(function (res) {
+        prepare(res[0]);
+        window.fillMeta(res[0].meta);
+        applyPopularity(res[1]);
         buildControls();
         buildIntro();
         state = readUrl();
+        if (state.sort === 'trending' && !trendPos) state.sort = '';
         syncControls();
         if (!bound) { bind(); bound = true; }
+        buildRows();
         render();
         renderTray();
-        loadPopularity();
       })
       .catch(function () {
         el.summary.innerHTML = '<span class="error">Could not load the price list. ' +
@@ -590,53 +600,110 @@
       });
   }
 
-  // Optional: only exists once GoatCounter has data. It is an ORDER of brand
-  // ids (no counts). Adds the sort option and badges and re-renders; a
-  // missing file changes nothing.
-  function loadPopularity() {
-    fetch('data/popularity.json')
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (p) {
-        var ranked = (p && p.ranked || []).filter(function (id) { return byId[id]; });
-        if (!ranked.length) { dropPopularSort(); return; }
-        trendPos = {};
-        var perCat = {};
-        ranked.forEach(function (id, i) {
-          trendPos[id] = i;
-          var c = byId[id].cat;
-          perCat[c] = (perCat[c] || 0) + 1;
-          if (perCat[c] <= TRENDING_BADGE) catRank[id] = perCat[c];
-        });
-        var o = document.createElement('option');
-        o.value = 'trending';
-        o.textContent = 'Trending this week';
-        el.sort.insertBefore(o, el.sort.options[1]);
-        el.sort.value = state.sort;
-        render();
-      })
-      .catch(dropPopularSort);
+  // Rankings are ORDERS of brand ids (never counts), from GoatCounter via CI:
+  // "ranked" = this week (Trending), "popular" = this month (Most popular).
+  var trendIds = [], popularIds = [];
+  function applyPopularity(p) {
+    trendIds = (p && p.ranked || []).filter(function (id) { return byId[id]; });
+    popularIds = (p && p.popular || []).filter(function (id) { return byId[id]; });
+    if (!trendIds.length) return;
+    trendPos = {};
+    var perCat = {};
+    trendIds.forEach(function (id, i) {
+      trendPos[id] = i;
+      var c = byId[id].cat;
+      perCat[c] = (perCat[c] || 0) + 1;
+      if (perCat[c] <= TRENDING_BADGE) catRank[id] = perCat[c];
+    });
+    var o = document.createElement('option');
+    o.value = 'trending';
+    o.textContent = 'Trending this week';
+    el.sort.insertBefore(o, el.sort.options[1]);
   }
 
-  // A shared ?sort=trending link on a site without ranking data falls back
-  // to the default order instead of a blank sort menu.
-  function dropPopularSort() {
-    if (state.sort !== 'trending') return;
-    state.sort = '';
-    el.sort.value = '';
-    writeUrl();
-    render();
+  // ------------------------------------------------------------ home rows
+
+  var ROW_SIZE = 10;
+  // Cheapest-bottle rows: real rankings straight from the price list, so the
+  // home page has content before any visit data exists.
+  var CHEAPEST = [['whisky', 750], ['rum', 750], ['brandy', 750], ['beer', 650], ['vodka', 750]];
+
+  var BOTTLE = '<svg class="bottle" viewBox="0 0 60 140" aria-hidden="true" focusable="false">' +
+    '<path d="M24 6h12v28c0 7 12 13 12 26v70a6 6 0 0 1-6 6H18a6 6 0 0 1-6-6V60c0-13 12-19 12-26z"/>' +
+    '<rect x="17" y="80" width="26" height="28" rx="3"/></svg>';
+
+  function tile(b, rank, priceText, sizeText) {
+    var img = photos[b.id]
+      ? '<img src="' + esc(photos[b.id]) + '" alt="" width="120" height="150" loading="lazy">'
+      : BOTTLE;
+    return '<li class="tile" data-cat="' + esc(b.cat) + '"><a href="p/' + esc(b.id) + '.html">' +
+      '<span class="tile-img">' + img + '<span class="rank" aria-hidden="true">' + rank + '</span></span>' +
+      '<span class="tile-name">' + esc(b.name) + '</span>' +
+      '<span class="tile-price">' + priceText + '</span>' +
+      '<span class="tile-size">' + sizeText + '</span></a></li>';
   }
 
-  // Rotating search suggestions in the placeholder. Stops while the box is
-  // focused or has text; a placeholder change is not motion.
-  (function rotatePlaceholder() {
-    var names = ['Old Monk', 'Royal Stag', "McDowell's No.1", 'Kingfisher', 'Honey Bee', 'Magic Moments', 'Bacardi'];
-    var i = 0;
-    setInterval(function () {
-      if (document.activeElement === el.q || el.q.value) return;
-      i = (i + 1) % names.length;
-      el.q.placeholder = 'Try “' + names[i] + '”';
-    }, 2600);
+  function cheapestOf(b) {
+    return b.sizes.reduce(function (m, s) { return !m || s.price < m.price ? s : m; }, null);
+  }
+
+  function row(key, title, sub, see, tiles) {
+    return '<section class="row" aria-labelledby="row-' + key + '">' +
+      '<div class="row-head"><h2 id="row-' + key + '">' + title + '</h2>' +
+      (see ? '<a class="see-all" href="' + see + '">See all</a>' : '') + '</div>' +
+      '<p class="row-sub">' + sub + '</p><ol class="tiles">' + tiles + '</ol></section>';
+  }
+
+  function rankedRow(key, title, sub, see, ids) {
+    var tiles = ids.slice(0, ROW_SIZE).map(function (id, i) {
+      var b = byId[id], c = cheapestOf(b);
+      return tile(b, i + 1, 'from ' + money(c.price), b.sizes.map(function (s) { return s.ml; }).join(' · ') + ' ml');
+    }).join('');
+    return row(key, title, sub, see, tiles);
+  }
+
+  function buildRows() {
+    var html = '';
+    if (trendIds.length) {
+      html += rankedRow('trending', 'Trending', 'Most looked up on this site this week', '?sort=trending', trendIds);
+    }
+    if (popularIds.length) {
+      html += rankedRow('popular', 'Most popular', 'Most looked up on this site this month', null, popularIds);
+    }
+    CHEAPEST.forEach(function (pair) {
+      var cat = pair[0], ml = pair[1];
+      var list = brands
+        .map(function (b) {
+          var s = b.cat === cat && b.sizes.filter(function (x) { return x.ml === ml; })[0];
+          return s ? { b: b, s: s } : null;
+        })
+        .filter(Boolean)
+        .sort(function (a, b) { return a.s.price - b.s.price || (a.b.name < b.b.name ? -1 : 1); })
+        .slice(0, ROW_SIZE);
+      if (!list.length) return;
+      var label = (CAT_LABEL[cat] || cat).toLowerCase();
+      html += row('cheap-' + cat, 'Cheapest ' + label, ml + ' ml bottles, lowest price first',
+        '?cat=' + cat + '&amp;size=' + ml + '&amp;sort=price-asc',
+        list.map(function (x, i) { return tile(x.b, i + 1, money(x.s.price), ml + ' ml'); }).join(''));
+    });
+    $('rows').innerHTML = html;
+  }
+
+  // ------------------------------------------------------------ location
+
+  (function locationSheet() {
+    var sheet = $('location');
+    var open = function () {
+      if (typeof sheet.showModal === 'function') sheet.showModal(); else sheet.setAttribute('open', '');
+      $('loc-close').focus();
+    };
+    var close = function () {
+      if (typeof sheet.close === 'function') sheet.close(); else sheet.removeAttribute('open');
+    };
+    $('loc-btn').addEventListener('click', open);
+    $('loc-close').addEventListener('click', close);
+    sheet.addEventListener('click', function (e) { if (e.target === sheet) close(); });
+    sheet.addEventListener('close', function () { $('loc-btn').focus(); });
   })();
 
   load();

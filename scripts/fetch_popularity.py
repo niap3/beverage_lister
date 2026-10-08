@@ -1,4 +1,4 @@
-"""Build the "Trending this week" ranking from GoatCounter.
+"""Build the "Trending" (7 days) and "Most popular" (30 days) rankings from GoatCounter.
 
 Usage:  GOATCOUNTER_TOKEN=... python scripts/fetch_popularity.py [out.json]
         (CI runs this on deploy and weekly; default out is data/popularity.json)
@@ -6,7 +6,9 @@ Usage:  GOATCOUNTER_TOKEN=... python scripts/fetch_popularity.py [out.json]
 What it ranks: interest on this site. A brand's interest is the number of
 visitors to its page (p/<id>.html) plus the times it was added to the
 compare tray. Brands are ordered by the last 7 days, ties broken by the last
-30. It is not sales; the site says "trending", never "best selling".
+30 ("ranked", shown as Trending), and separately by the last 30 days alone
+("popular", shown as Most popular). It is not sales; the site never says
+"best selling".
 
 Only the ORDER is published (a list of brand ids), never the counts.
 Brands with fewer than MIN_30D look-ups in 30 days are left out as noise.
@@ -55,6 +57,13 @@ def rank(week, month, min_month=MIN_30D):
                                       -total(month[i]), i))
 
 
+def rank_month(month, min_month=MIN_30D):
+    """Brand ids ordered by 30-day interest. Pure, for tests."""
+    total = lambda c: c["views"] + c["compares"]
+    ids = [i for i, c in month.items() if total(c) >= min_month]
+    return sorted(ids, key=lambda i: (-total(month[i]), i))
+
+
 def fetch_hits(code, token, days):
     end = datetime.now(timezone.utc).replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
     start = end - timedelta(days=days)
@@ -79,10 +88,11 @@ def fetch_hits(code, token, days):
             return rows
 
 
-def write(out, ranked):
+def write(out, ranked, popular=()):
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps({"updated": datetime.now(timezone.utc).date().isoformat(),
-                               "window_days": 7, "ranked": ranked}, separators=(",", ":")),
+                               "window_days": 7, "ranked": ranked, "popular": list(popular)},
+                              separators=(",", ":")),
                    encoding="utf-8")
 
 
@@ -103,7 +113,7 @@ def main():
         write(out, [])
         return 0
     ranked = rank(week, month)
-    write(out, ranked)
+    write(out, ranked, rank_month(month))
     if not ranked:
         print(f"Trending: no brand has {MIN_30D}+ look-ups in 30 days yet; empty ranking.")
         return 0

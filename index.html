@@ -23,6 +23,7 @@
 <link rel="preload" href="assets/fonts/barlow-semi-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/fraunces-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="data/site.json" as="fetch" crossorigin>
+<link rel="preload" href="data/popularity.json" as="fetch" crossorigin>
 <link rel="stylesheet" href="assets/style.css">
 <script>/* Before first paint: hide the welcome block on search/filter links, so it never appears and then jumps away. */
 if (/[?&](q|cat|size|min|max|sup|cmp)=/.test(location.search)) document.documentElement.className += " has-query";</script>
@@ -31,12 +32,10 @@ if (/[?&](q|cat|size|min|max|sup|cmp)=/.test(location.search)) document.document
 
 <a class="skip" href="#main">Skip to results</a>
 
-<header class="masthead">
-  <div class="wrap masthead-row">
-    <h1 class="site-name"><span class="logo-mark" aria-hidden="true">₹</span>Kerala liquor prices</h1>
-    <nav aria-label="Site" class="site-nav"><a href="catalogue.html">Catalogue</a> <a href="about.html">About</a></nav>
-  </div>
-  <div class="wrap">
+<header class="hero">
+  <div class="wrap hero-inner">
+    <!-- Logo slot: swap the text for the wordmark image when it is ready. -->
+    <h1 class="logo"><a href="./"><span class="logo-word">Kerala liquor prices</span></a></h1>
     <p class="age">For adults only. The legal drinking age in Kerala is 23.</p>
   </div>
 </header>
@@ -45,8 +44,7 @@ if (/[?&](q|cat|size|min|max|sup|cmp)=/.test(location.search)) document.document
   <div class="wrap">
     <form class="search" role="search" id="search-form">
       <label for="q" class="visually-hidden">Search by brand name</label>
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-      <input id="q" name="q" type="search" placeholder="Try “Royal Stag”"
+      <input id="q" name="q" type="search" placeholder="Search"
              autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"
              enterkeyhint="search">
       <button type="button" id="clear" class="clear" aria-label="Clear search" hidden>&times;</button>
@@ -100,19 +98,12 @@ if (/[?&](q|cat|size|min|max|sup|cmp)=/.test(location.search)) document.document
 </div>
 
 <main class="wrap results-main" id="main" tabindex="-1">
-  <section class="intro" id="intro" aria-labelledby="intro-title">
-    <h2 id="intro-title"><span lang="ml">എന്താ വില?</span><span class="intro-en">What does it cost at Bevco?</span></h2>
-    <p>Look up any of <span data-meta="brands">1,327</span> brands. Every bottle size side by side, with the price per litre so you can tell which size is better value.</p>
-    <p class="intro-label">Browse by type</p>
-    <ul class="type-links" id="type-links"></ul>
-    <p class="intro-label">Best value, lowest price per litre first</p>
-    <ul class="type-links value-links">
-      <li><a href="?cat=whisky&amp;size=750&amp;max=1000&amp;sort=litre" data-cat="whisky">750 ml whisky under ₹1,000</a></li>
-      <li><a href="?cat=brandy&amp;size=750&amp;max=1000&amp;sort=litre" data-cat="brandy">750 ml brandy under ₹1,000</a></li>
-      <li><a href="?cat=rum&amp;size=750&amp;max=1000&amp;sort=litre" data-cat="rum">750 ml rum under ₹1,000</a></li>
-      <li><a href="?cat=beer&amp;size=650&amp;max=200&amp;sort=litre" data-cat="beer">650 ml beer under ₹200</a></li>
-    </ul>
-    <p class="try">Try: <a href="?q=old%20monk" data-q="old monk">Old Monk</a> · <a href="?q=mcdowells%20no.1" data-q="mcdowells no.1">McDowell's No.1</a> · <a href="?q=honey%20bee" data-q="honey bee">Honey Bee</a> · <a href="?q=kingfisher" data-q="kingfisher">Kingfisher</a></p>
+  <section class="home" id="intro" aria-label="Rankings">
+    <div id="rows" class="rows"></div>
+    <section class="row" aria-labelledby="row-types">
+      <div class="row-head"><h2 id="row-types">Browse by type</h2><a class="see-all" href="catalogue.html">Catalogue</a></div>
+      <ul class="type-links" id="type-links"></ul>
+    </section>
   </section>
   <p id="summary" class="summary" role="status" aria-live="polite" tabindex="-1">Loading prices…</p>
   <p id="notice" class="notice" hidden></p>
@@ -125,7 +116,7 @@ if (/[?&](q|cat|size|min|max|sup|cmp)=/.test(location.search)) document.document
   <div class="wrap">
     <p><strong>Source:</strong> Kerala State Beverages (M&amp;M) Corporation Limited, <span data-meta="title">Price List of IMFL/BEER/WINE for Warehouses and FL-1 Shops (Tender 2026-27 - Quoted Items)</span>.</p>
     <p>Prices effective from <strong data-meta="effective">11 May 2026</strong>. List printed on <strong data-meta="printed">23 September 2026</strong>.</p>
-    <p><a href="source/pricelist.pdf">Open the original price list (PDF, 1.5 MB)</a><br><a href="about.html">About this site and reporting an error</a></p>
+    <p><a href="source/pricelist.pdf">Open the original price list (PDF, 1.5 MB)</a><br><a href="catalogue.html">Catalogue of every brand</a><br><a href="about.html">About this site and reporting an error</a></p>
     <p>This is an unofficial lookup, not run by or connected to KSBC (Bevco). It is for information only. It does not sell or deliver alcohol, and it has no ads or affiliate links. Prices are the FL-1 shop price after tax, copied from the list above. If that list has changed since, a shop may charge a different price, and the shop’s price applies.</p>
   </div>
 </footer>
@@ -137,6 +128,25 @@ if (/[?&](q|cat|size|min|max|sup|cmp)=/.test(location.search)) document.document
     <button type="button" id="tray-open" class="tray-open">Compare</button>
   </div>
 </div>
+
+<button type="button" id="loc-btn" class="fab" aria-haspopup="dialog">
+  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.6" fill="currentColor"/></svg>
+  Location
+</button>
+
+<dialog id="location" class="sheet" aria-labelledby="loc-title">
+  <div class="sheet-head">
+    <h2 id="loc-title">Location</h2>
+    <button type="button" id="loc-close" class="close" aria-label="Close">&times;</button>
+  </div>
+  <div class="sheet-body">
+    <p>Prices on this site are for:</p>
+    <ul class="loc-list">
+      <li aria-current="true"><span class="loc-tick" aria-hidden="true">✓</span><span><strong>Kerala</strong><br><span class="small">Bevco (KSBC) FL-1 shops</span></span></li>
+    </ul>
+    <p class="small">Only Kerala for now. Other states do not publish a brand-wise price list that this site can read and check.</p>
+  </div>
+</dialog>
 
 <dialog id="compare" class="compare" aria-labelledby="compare-title">
   <div class="compare-head">
