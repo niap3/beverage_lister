@@ -239,7 +239,7 @@ on `localhost` or HTTPS.
 | `scripts/fetch_popularity.py` | GoatCounter counts to the trending order in `data/popularity.json` (CI) |
 | `scripts/finalize_site.py` | Cache-busts CSS/JS and adds the counter on the built site (CI) |
 | `scripts/og-image.html` | Source for the share image `assets/og-image.png` |
-| `assets/logo.svg`, `assets/logo-white.svg`, `assets/favicon.svg` | The Matta logo (the owner's own artwork), a white copy, and the tab icon made from its M |
+| `assets/logo.svg`, `assets/logo-white.svg`, `assets/favicon.svg` | The Matta logo (the owner's own artwork), a white copy, and the tab icon: the logo's bottle without the letters, stood upright |
 | `data/products.json` | One row per bottle (the full data) |
 | `data/history/` | Every parsed version |
 | `source/pricelist.pdf` | The current list; `source/archive/` has every version |
