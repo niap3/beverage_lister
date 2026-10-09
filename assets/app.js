@@ -104,6 +104,7 @@
     el.sizeChips.innerHTML = chip('size', '', 'All', true) + sizes.map(function (s) {
       return chip('size', String(s), s + ' ml', false);
     }).join('');
+    el.sup.length = 1;   // keep "All suppliers"; rebuilt when the state changes
     var frag = document.createDocumentFragment();
     data.suppliers.forEach(function (s) {
       var o = document.createElement('option');
@@ -575,7 +576,7 @@
     var ranking = fetch('data/popularity.json')
       .then(function (r) { return r.ok ? r.json() : null; })
       .catch(function () { return null; });
-    Promise.all([fetch('data/site.json').then(function (r) {
+    Promise.all([fetch(currentState().data).then(function (r) {
       if (!r.ok) throw new Error(r.status);
       return r.json();
     }), ranking])
@@ -606,6 +607,10 @@
   function applyPopularity(p) {
     trendIds = (p && p.ranked || []).filter(function (id) { return byId[id]; });
     popularIds = (p && p.popular || []).filter(function (id) { return byId[id]; });
+    var old = el.sort.querySelector('option[value="trending"]');
+    if (old) old.remove();
+    trendPos = null;
+    catRank = {};
     if (!trendIds.length) return;
     trendPos = {};
     var perCat = {};
@@ -691,18 +696,76 @@
 
   // ------------------------------------------------------------ location
 
-  (function locationSheet() {
-    var sheet = $('location');
-    var open = function () {
+  // Every state and union territory. A state is selectable only when it has
+  // a checked, official price list (a "data" file); the rest are listed but
+  // disabled, so the site never shows a price it does not have. Adding a
+  // state later = give it a data file and a source line here.
+  var STATES = [
+    { key: 'kerala', name: 'Kerala', data: 'data/site.json', source: 'Bevco (KSBC) FL-1 shops' },
+    'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat',
+    'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Madhya Pradesh', 'Maharashtra',
+    'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim',
+    'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
+    'Andaman and Nicobar Islands', 'Chandigarh', 'Dadra and Nagar Haveli and Daman and Diu',
+    'Delhi', 'Jammu and Kashmir', 'Ladakh', 'Lakshadweep', 'Puducherry'
+  ].map(function (x) {
+    return typeof x === 'string' ? { key: x.toLowerCase().replace(/[^a-z]+/g, '-'), name: x } : x;
+  });
+  var DEFAULT_STATE = 'kerala';
+
+  function storedState() {
+    try { return localStorage.getItem('state') || DEFAULT_STATE; } catch (e) { return DEFAULT_STATE; }
+  }
+  function currentState() {
+    var key = storedState();
+    return STATES.filter(function (st) { return st.key === key && st.data; })[0] ||
+      STATES.filter(function (st) { return st.key === DEFAULT_STATE; })[0];
+  }
+
+  (function statePicker() {
+    var sheet = $('location'), list = $('loc-list'), filter = $('loc-filter');
+    $('loc-name').textContent = currentState().name;
+
+    function draw() {
+      var q = filter.value.trim().toLowerCase();
+      var cur = currentState().key;
+      var shown = STATES.filter(function (st) { return !q || st.name.toLowerCase().indexOf(q) !== -1; })
+        .sort(function (a, b) { return (b.data ? 1 : 0) - (a.data ? 1 : 0) || (a.name < b.name ? -1 : 1); });
+      list.innerHTML = shown.map(function (st) {
+        var on = st.key === cur;
+        return '<li><button type="button" class="state' + (on ? ' is-on' : '') + '" data-state="' + st.key + '"' +
+          (st.data ? ' aria-pressed="' + on + '"' : ' disabled') + '>' +
+          '<span class="state-tick" aria-hidden="true">' + (on ? '✓' : '') + '</span>' +
+          '<span class="state-text"><span class="state-name">' + esc(st.name) + '</span>' +
+          '<span class="state-note">' + (st.data ? esc(st.source) : 'No price list yet') + '</span></span>' +
+          '</button></li>';
+      }).join('') || '<li class="state-none">No state matches “' + esc(filter.value) + '”.</li>';
+    }
+
+    function open() {
+      filter.value = '';
+      draw();
       if (typeof sheet.showModal === 'function') sheet.showModal(); else sheet.setAttribute('open', '');
-      $('loc-close').focus();
-    };
-    var close = function () {
+      var on = list.querySelector('.is-on');
+      (on || $('loc-close')).focus();
+    }
+    function close() {
       if (typeof sheet.close === 'function') sheet.close(); else sheet.removeAttribute('open');
-    };
+    }
+
     $('loc-btn').addEventListener('click', open);
     $('loc-close').addEventListener('click', close);
-    sheet.addEventListener('click', function (e) { if (e.target === sheet) close(); });
+    filter.addEventListener('input', draw);
+    sheet.addEventListener('click', function (e) {
+      if (e.target === sheet) { close(); return; }
+      var b = e.target.closest('[data-state]');
+      if (!b || b.disabled) return;
+      var changed = b.getAttribute('data-state') !== currentState().key;
+      try { localStorage.setItem('state', b.getAttribute('data-state')); } catch (err) { /* private mode */ }
+      $('loc-name').textContent = currentState().name;
+      close();
+      if (changed) load();   // only reachable once a second state has data
+    });
     sheet.addEventListener('close', function () { $('loc-btn').focus(); });
   })();
 

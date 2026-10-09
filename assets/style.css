@@ -727,18 +727,39 @@ body.has-tray .fab { bottom: calc(86px + env(safe-area-inset-bottom, 0px)); }
 .sheet-head h2 { margin: 0; font: 600 1.25rem/1.2 var(--sans); }
 .sheet-body { padding: 4px 20px calc(22px + env(safe-area-inset-bottom, 0px)); }
 .sheet-body p { margin: 0 0 10px; }
-.loc-list { margin: 0 0 12px; padding: 0; list-style: none; }
-.loc-list li {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 14px;
-  border: 1px solid #15803D; border-radius: 14px;
-  background: #F0FAF3;
+.sheet { max-height: 85vh; }
+.sheet[open] { display: flex; flex-direction: column; }
+.sheet-body { overflow-y: auto; }
+.loc-filter {
+  width: 100%; height: 44px; margin: 4px 0 12px; padding: 0 16px;
+  border: 1px solid var(--line-strong); border-radius: 999px;
+  background: var(--surface); color: var(--ink); font: inherit;
 }
-.loc-tick {
+.loc-filter:focus { outline: none; border-color: #15803D; box-shadow: 0 0 0 3px #E3F4E8; }
+.loc-list { display: grid; gap: 6px; margin: 0 0 12px; padding: 0; list-style: none; }
+.state {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; min-height: 56px; padding: 8px 14px;
+  border: 1px solid var(--line); border-radius: 14px;
+  background: var(--surface); color: var(--ink);
+  font: inherit; text-align: left; cursor: pointer;
+}
+.state:hover:not(:disabled) { border-color: #15803D; }
+.state.is-on { border-color: #15803D; background: #F0FAF3; }
+.state:disabled { cursor: default; background: #FAFAF8; }
+.state:disabled .state-name { color: var(--muted); }
+.state-tick {
   display: grid; place-items: center; flex: none;
   width: 26px; height: 26px; border-radius: 50%;
-  background: #15803D; color: #fff; font-size: 0.875rem; font-weight: 700;
+  border: 1.5px solid var(--line-strong);
+  color: #fff; font-size: 0.875rem; font-weight: 700;
 }
+.state.is-on .state-tick { background: #15803D; border-color: #15803D; }
+.state:disabled .state-tick { border-style: dashed; }
+.state-text { display: flex; flex-direction: column; }
+.state-name { font-weight: 600; }
+.state-note { font-size: 0.8125rem; color: var(--muted); }
+.state-none { padding: 12px 4px; color: var(--muted); }
 @media (min-width: 700px) {
   .sheet { margin: auto; border-radius: 20px; }
   .tile { width: 168px; }
