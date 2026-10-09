@@ -1,45 +1,32 @@
 <!doctype html>
 <!-- Source for assets/og-image.png (1200x630 share preview). Render with:
      chrome-headless-shell --screenshot=assets/og-image.png --window-size=1200,630
-                           --hide-scrollbars scripts/og-image.html
-     Text only, no bottles or glasses, same palette as the site. -->
+                           --hide-scrollbars --allow-file-access-from-files scripts/og-image.html
+     The owner's Matta logo, text only otherwise, matching the site. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <style>
-  @font-face {
-    font-family: "Barlow Semi Condensed";
-    font-weight: 700;
-    src: url("../assets/fonts/barlow-semi-condensed-latin-700-normal.woff2") format("woff2");
-  }
   html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
   body {
-    background: #F6F1E7;
-    color: #1C1B19;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 34px;
+    background: #FFFFFF; color: #1B1B1A;
     font-family: system-ui, "Segoe UI", sans-serif;
-    display: flex;
-    flex-direction: column;
   }
-  .band { background: #1F4D3A; color: #F6F1E7; padding: 56px 72px 44px; }
-  h1 { margin: 0; font: 700 96px/1 "Barlow Semi Condensed", sans-serif; letter-spacing: 0.01em; }
-  .sub { margin: 18px 0 0; font-size: 34px; }
-  .body { flex: 1; display: flex; align-items: center; gap: 0; padding: 0 72px; }
-  .cell { flex: 1; padding: 22px 28px; border-left: 2px solid #D9CFBD; }
-  .cell:first-child { border-left: 0; padding-left: 0; }
-  .ml { font-size: 30px; font-weight: 600; color: #5E574C; }
-  .p { font: 700 74px/1.05 "Barlow Semi Condensed", sans-serif; color: #8A3B1E; }
-  .foot { padding: 0 72px 40px; font-size: 26px; color: #5E574C; }
+  img { width: 620px; height: auto; }
+  .line { margin: 0; font-size: 40px; font-weight: 600; letter-spacing: -0.01em; }
+  .sub { margin: -18px 0 0; font-size: 28px; color: #66645E; }
+  .pill {
+    margin-top: 6px; padding: 14px 34px;
+    border-radius: 999px; background: #15803D; color: #fff;
+    font-size: 26px; font-weight: 500;
+  }
 </style>
 </head>
 <body>
-  <div class="band">
-    <h1>Kerala liquor prices</h1>
-    <p class="sub">Search the Bevco shop price list by brand name</p>
-  </div>
-  <div class="body">
-    <div class="cell"><div class="ml">Every size</div><div class="p">side by side</div></div>
-    <div class="cell"><div class="ml">Compare by</div><div class="p">₹ per litre</div></div>
-  </div>
-  <p class="foot">Unofficial. Free. No ads.</p>
+  <img src="../assets/logo.svg" alt="">
+  <p class="line">Kerala liquor prices, every bottle size</p>
+  <p class="sub">From the Bevco price list, with the price per litre</p>
+  <span class="pill">Unofficial · Free · No ads</span>
 </body>
 </html>

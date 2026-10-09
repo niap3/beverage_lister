@@ -7,7 +7,7 @@
  */
 var CACHE = 'prices-v3';
 var CORE = ['./', 'index.html', 'about.html', 'catalogue.html', 'assets/style.css', 'assets/meta.js', 'assets/search.js',
-            'assets/app.js', 'assets/logo.svg', 'assets/fonts/barlow-semi-condensed-latin-700-normal.woff2',
+            'assets/app.js', 'assets/logo.svg', 'assets/favicon.svg', 'assets/fonts/barlow-semi-condensed-latin-700-normal.woff2',
             'data/site.json', 'data/meta.json'];
 
 self.addEventListener('install', function (e) {

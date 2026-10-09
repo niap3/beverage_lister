@@ -37,11 +37,6 @@ CAT_LABEL = {"whisky": "Whisky", "brandy": "Brandy", "rum": "Rum", "vodka": "Vod
 CAT_NOTE = {"other": "Items whose name does not say what they are, mostly wines, "
                      "coolers and beers listed without the word in their name."}
 
-FAVICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E"
-           "%3Crect width='32' height='32' rx='6' fill='%238A3B1E'/%3E%3Ctext x='16' y='24' "
-           "font-size='22' font-family='sans-serif' font-weight='700' text-anchor='middle' "
-           "fill='%23FFFDF8'%3E%E2%82%B9%3C/text%3E%3C/svg%3E")
-
 e = html.escape
 
 
@@ -134,7 +129,7 @@ def page(*, title, description, canonical, og_image, root, body, site_name, foot
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FFFFFF">
 <meta name="color-scheme" content="light">
-<link rel="icon" href="{FAVICON}">
+<link rel="icon" href="{root}assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="{root}assets/fonts/barlow-semi-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{root}assets/fonts/fraunces-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{root}assets/style.css">
@@ -143,7 +138,7 @@ def page(*, title, description, canonical, og_image, root, body, site_name, foot
 <a class="skip" href="#main">Skip to content</a>
 <header class="masthead">
   <div class="wrap masthead-row">
-    <p class="site-name"><a href="{root}./"><img src="{root}assets/logo.svg" alt="{e(site_name)}, home" width="398" height="170"></a></p>
+    <p class="site-name"><a href="{root}./"><img src="{root}assets/logo.svg" alt="{e(site_name)}, home" width="304" height="132"></a></p>
     <nav aria-label="Site" class="site-nav">{links}</nav>
   </div>
   <div class="wrap"><p class="age">For adults only. The legal drinking age in Kerala is 23.</p></div>
