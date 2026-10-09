@@ -99,6 +99,7 @@ main:focus { outline: none; }
 
 .masthead { background: var(--surface); border-bottom: 1px solid var(--line); padding: 14px 0 12px; }
 .masthead-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.site-name img { display: block; width: auto; height: 34px; }
 .site-name, .site-name a {
   display: flex; align-items: center; gap: 10px;
   margin: 0;
@@ -598,7 +599,7 @@ body.has-tray { padding-bottom: 76px; }
 .hero-inner { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .logo { margin: 0; }
 .logo a { color: var(--ink); text-decoration: none; }
-.logo-word { font: 600 1.75rem/1.1 var(--serif); letter-spacing: -0.02em; }
+.logo img { display: block; width: auto; height: 72px; }
 .hero .age { margin: 0; font-size: 0.75rem; color: var(--muted); }
 
 .searchbar { background: rgba(255, 255, 255, 0.94); border-bottom: 0; padding: 12px 0 8px; }
@@ -617,8 +618,8 @@ html.has-query .search { max-width: none; }
 .search input::placeholder { color: var(--ink); }
 .search input:focus { border-color: var(--line-strong); box-shadow: 0 0 0 3px var(--accent-soft), 0 8px 24px rgba(27, 27, 26, 0.07); }
 .clear { top: 6px; right: 8px; }
-.asof { text-align: center; }
-html.has-query .asof { text-align: left; }
+.searchbar .asof { text-align: center; }
+html.has-query .searchbar .asof { text-align: left; }
 
 /* Home vs search: rows on the bare home page, results while searching. */
 html.has-query .home { display: none; }

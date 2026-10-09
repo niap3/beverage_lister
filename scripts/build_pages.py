@@ -143,7 +143,7 @@ def page(*, title, description, canonical, og_image, root, body, site_name, foot
 <a class="skip" href="#main">Skip to content</a>
 <header class="masthead">
   <div class="wrap masthead-row">
-    <p class="site-name"><a href="{root}./"><span class="logo-mark" aria-hidden="true">₹</span>{e(site_name)}</a></p>
+    <p class="site-name"><a href="{root}./"><img src="{root}assets/logo.svg" alt="{e(site_name)}, home" width="398" height="170"></a></p>
     <nav aria-label="Site" class="site-nav">{links}</nav>
   </div>
   <div class="wrap"><p class="age">For adults only. The legal drinking age in Kerala is 23.</p></div>
@@ -271,7 +271,7 @@ def brand_page(b, meta, cfg, versions, by_code, by_name, media, foot):
 </article>"""
     og = site + photo["path"] if photo else site + "assets/og-image.png"
     return page(title=title, description=description, canonical=f'{site}p/{b["id"]}.html',
-                og_image=og, root=root, body=body, site_name="Kerala liquor prices", foot=foot)
+                og_image=og, root=root, body=body, site_name="Matta", foot=foot)
 
 
 # --------------------------------------------------------------- catalogue
@@ -292,7 +292,7 @@ def catalogue_pages(brands, meta, cfg, foot):
         title="Catalogue: every brand in the Kerala price list",
         description=f'Browse all {inr(len(brands))} brands in the Bevco price list by type, A to Z.',
         canonical=f"{site}catalogue.html", og_image=site + "assets/og-image.png", root="",
-        site_name="Kerala liquor prices", active="Catalogue", foot=foot,
+        site_name="Matta", active="Catalogue", foot=foot,
         body=f"""<h1>Catalogue</h1>
 <p>All {inr(len(brands))} brands in the Bevco price list from {nice_date(meta['effective'])}, by type. Type is read from the brand name, because the list itself has no type column.</p>
 <ul class="cat-tiles">{tiles}</ul>""")
@@ -317,7 +317,7 @@ def catalogue_pages(brands, meta, cfg, foot):
             title=f"{CAT_LABEL[c]} prices in Kerala: all {len(items)} brands",
             description=f"Every {CAT_LABEL[c].lower()} in the Bevco price list, A to Z, with sizes and the lowest price.",
             canonical=f"{site}catalogue/{c}.html", og_image=site + "assets/og-image.png", root="../",
-            site_name="Kerala liquor prices", active="Catalogue", foot=foot,
+            site_name="Matta", active="Catalogue", foot=foot,
             body=f"""<nav aria-label="Breadcrumb" class="crumbs"><a href="../catalogue.html">Catalogue</a></nav>
 <h1>{CAT_LABEL[c]} <span class="small">({plural(len(items), "brand")})</span></h1>
 {note}
